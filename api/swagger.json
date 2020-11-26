@@ -1,0 +1,305 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Kirilovi-08 API",
+    "description": "API for different types of E-Commerce WebSites",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:4567",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API for users in the system"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Pagination all products",
+        "description": "Data can be filtered by Category or/and containing ProductName substring. Data can be sort by each property with descending or ascending data direction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ProductListDTO"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Add new product",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "New products were inserted",
+            "schema": {
+              "$ref": "#/definitions/ProductListDTO"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete Products by Category or Web Site",
+        "description": "By specifing the categoryID, all connected products will be deleted. Or skipping the property data will remove all products connected with the website",
+        "responses": {
+          "200": {
+            "description": "Were deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/products/:id": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Take product by productID",
+        "description": "Return product object",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ProductDTO"
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Product details update by productID",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ProductDTO"
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Partial product data update by productID",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ProductDTO"
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete Products by Category or Web Site",
+        "description": "By specifing the categoryID, all connected products will be deleted. Or skipping the property data will remove all products connected with the website",
+        "responses": {
+          "200": {
+            "description": "Were deleted successfully"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ProductDTO": {
+      "type": "object",
+      "$ref": "#/definitions/ProductDTO",
+      "required": [
+        "_id",
+        "name",
+        "siteID",
+        "categoryID"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "categoryID": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pack": {
+          "type": "string"
+        },
+        "sort": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sizes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "price": {
+          "type": "number"
+        },
+        "discount": {
+          "type": "number"
+        },
+        "imgURL": {
+          "type": "string"
+        },
+        "iconURL": {
+          "type": "string"
+        },
+        "details": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "number"
+        }
+      }
+    },
+    "ProductListDTO": {
+      "type": "object",
+      "$ref": "#/definitions/ProductListDTO",
+      "required": [
+        "siteID",
+        "categoryID"
+      ],
+      "properties": {
+        "currentPage": {
+          "type": "number",
+          "default": 1
+        },
+        "perPage": {
+          "type": "number",
+          "default": 15
+        },
+        "sort": {
+          "type": "string",
+          "direction": "desc",
+          "default": "name_property"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "uniqueItems": true
+              },
+              "categoryID": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "pack": {
+                "type": "string"
+              },
+              "sort": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "sizes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "price": {
+                "type": "number"
+              },
+              "discount": {
+                "type": "number"
+              },
+              "imgURL": {
+                "type": "string"
+              },
+              "iconURL": {
+                "type": "string"
+              },
+              "details": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "companies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
