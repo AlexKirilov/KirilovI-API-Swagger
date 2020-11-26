@@ -36,6 +36,7 @@ const host = process.env.HOST;
 // app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.use('/files', require(`${routes}/fileImpExp`));
 app.use('/products', require(`${routes}/products`));
 app.get('/', (req, res) => res.send('Welcome to my API'));
 
