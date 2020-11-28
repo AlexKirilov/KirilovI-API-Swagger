@@ -2,8 +2,10 @@ const app = require('express')();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/connectToDB');
+var fileupload = require("express-fileupload");
 
 app.use(cors());
+app.use(fileupload());
 app.use(bodyParser.json());
 
 // Load the DB connection config

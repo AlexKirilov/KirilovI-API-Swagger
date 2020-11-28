@@ -14,6 +14,8 @@ const productsSchema = new mongoose.Schema({
     iconURL: { type: String, default: '' },
     details: { type: String, default: '' },
     quantity: { type: Number, default: 0 },
+    createDate: { type: Date, default: new Date() },
+    lastEditDate: { type: Date, default: new Date() },
 });
 
 module.exports = mongoose.model('Products', productsSchema);
