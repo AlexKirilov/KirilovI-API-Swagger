@@ -15,6 +15,10 @@
       "description": "Individual Products CRUD operations"
     },
     {
+      "name": "Employee",
+      "description": "CRUD with Employees Data"
+    },
+    {
       "name": "File",
       "description": "Insert/Export data"
     }
@@ -179,6 +183,157 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          }
+        }
+      },
+      "EmployeeDTO": {
+        "type": "object",
+        "required": [
+          "_id",
+          "firstname",
+          "lastname",
+          "password"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "siteID": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "levelAuth": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "lastLogin": {
+            "type": "string"
+          },
+          "personalDiscount": {
+            "type": "number"
+          },
+          "address": {
+            "country": {
+              "type": "string"
+            },
+            "town": {
+              "type": "string"
+            },
+            "postcode": {
+              "type": "string"
+            },
+            "adderess": {
+              "type": "string"
+            },
+            "address1": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            }
+          }
+        },
+        "xml": {
+          "name": "EmployeeDTO"
+        }
+      },
+      "EmployeeListDTO": {
+        "type": "object",
+        "required": [
+          "siteID",
+          "categoryID"
+        ],
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "default": 1
+          },
+          "perPage": {
+            "type": "number",
+            "default": 15
+          },
+          "sort": {
+            "type": "string",
+            "default": "name_property"
+          },
+          "results": {
+            "type": "object",
+            "required": [
+              "_id",
+              "firstname",
+              "lastname",
+              "password"
+            ],
+            "properties": {
+              "_id": {
+                "type": "string",
+                "uniqueItems": true
+              },
+              "siteID": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "firstname": {
+                "type": "string"
+              },
+              "lastname": {
+                "type": "string"
+              },
+              "company": {
+                "type": "string"
+              },
+              "levelAuth": {
+                "type": "string"
+              },
+              "created": {
+                "type": "date"
+              },
+              "lastLogin": {
+                "type": "date"
+              },
+              "personalDiscount": {
+                "type": "number"
+              },
+              "address": {
+                "country": {
+                  "type": "string"
+                },
+                "town": {
+                  "type": "string"
+                },
+                "postcode": {
+                  "type": "string"
+                },
+                "adderess": {
+                  "type": "string"
+                },
+                "address1": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                }
+              }
+            },
+            "xml": {
+              "name": "EmployeeDTO"
             }
           }
         }
@@ -477,6 +632,228 @@
           },
           "404": {
             "description": "404 Not Found"
+          }
+        }
+      }
+    },
+    "/employees": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Pagination all employees",
+        "description": "Data can be filtered by employeeName and/or email substrings. Data can be sort by each property with descending or ascending data direction",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeListDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeListDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Add new employee",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "New employee was added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Delete all employees",
+        "description": "Äll employes connected to selected website will be removed",
+        "responses": {
+          "200": {
+            "description": "X employees were removed from the database 'successfully'",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/employees/:id": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Take employee by ID",
+        "description": "Returns data for selected employee",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Update employee details by ID",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "To update partial employee data",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Delete selected employee",
+        "description": "By providing the employee id, all records connected to it will be removed from the database",
+        "responses": {
+          "200": {
+            "description": "Employee_data was deleted successfully"
           }
         }
       }

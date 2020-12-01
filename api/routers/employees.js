@@ -4,6 +4,7 @@ const employeeRoute = express.Router();
 const employeeController = require('../controllers/employeeCTRL');
 const employeeControllerByID = require('../controllers/employeeByID');
 const { check, validationResult } = require("express-validator");
+
 const skipDetails = '-__v -GDPR -siteID -password -company';
 
 function routes() {
