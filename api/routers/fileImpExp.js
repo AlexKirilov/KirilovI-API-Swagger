@@ -4,18 +4,18 @@ const express = require('express');
 const fileRouter = express.Router();
 const Site = require("../models/Site");
 const { check, validationResult } = require("express-validator");
-
-const uploadConfig = require('../../config/uploader');
 const fileController = require('../controllers/fileImportExport');
 
 function routes() {
   const controller = fileController();
 
-  fileRouter.use('/', uploadConfig, func.checkAuthenticated, async (req, res, next) => {
+  fileRouter.use('/', func.checkAuthenticated, async (req, res, next) => {
     check("siteID").not().isEmpty().isString();
     check("notifyOnReply").toBoolean();
-
+    console.log(req.files);
+    console.log(req.siteID);
     const errors = validationResult(req);
+    console.log(errors)
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     } else if (req.siteID) {

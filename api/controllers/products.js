@@ -5,6 +5,8 @@ const Site = require("../models/Site");
 const Products = require("../models/Products");
 const Customers = require("../models/Customers");
 
+const skipDetails = '-v -createDate -siteID';
+
 function convertSort(sortColumn) {
   if (typeof sortColumn !== "object") {
     let sort = {};
@@ -50,7 +52,7 @@ function controller() {
     }
 
     const productSize = await Products.countDocuments(by);
-    const products = await Products.find(by).sort(sort).skip(skip).limit(20).exec();
+    const products = await Products.find(by, skipDetails).sort(sort).skip(skip).limit(20).exec();
 
     if (!products && !products.length) {
       return res.status(404).send();
@@ -76,7 +78,7 @@ function controller() {
 
     if (func.checkAuthLevelAsAuth(editLevel.editProd, req.authLevel)) {
       try {
-        const product = new Products(req.body);
+        const product = new Products(req.body, skipDetails);
         product.save((err) => {
           if (err) return res.send(err);
           return res.status(200).json(product);

@@ -43,7 +43,8 @@ function routes() {
         req.product = product;
         if (!product) return res.sendStatus(404);
         else return next();
-      });
+      })
+      .catch((err) => res.status(500).send(err));
     } else {
       return res.sendStatus(403);
     }

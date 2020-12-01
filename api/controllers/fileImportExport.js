@@ -2,11 +2,11 @@
 const excelToJson = require('convert-excel-to-json');
 const { ObjectId } = require('mongodb');
 const Products = require("../models/Products");
+const minRequiredFields = ['name', 'price', 'quantity'];
 
 function checkImportForRequiredColumns(jsonObj) {
   let isAllFields = true;
   const jsonHeaders = Object.keys(jsonObj);
-  const minRequiredFields = ['name', 'price', 'quantity'];
 
   minRequiredFields.forEach(property => {
     if (!jsonHeaders.includes(property)) {
@@ -22,9 +22,15 @@ function fileController() {
 
   async function importFile(req, res) {
     if (req.files.file) {
+      const nameExt = req.files.file.name.split('.')
+
+      if (req.files.file.mimetype !== 'text/xlsx' && req.files.file.mimetype !== 'xlsx' &&  nameExt[nameExt.length - 1] !== 'xlsx') {
+        return res.status(403).json({
+          message: `Provided file format "${req.files.file.mimetype}" is not matching the acceptable criterias. Provide file with an excel xlsx extension only.`
+        })
+      }
 
       const result = excelToJson({
-        // sourceFile: __dirname + '/API-Test.xlsx',
         source: req.files.file.data,
         columnToKey: {
           '*': '{{columnHeader}}'
@@ -35,6 +41,7 @@ function fileController() {
       });
 
       const firstSheet = result[Object.keys(result)[0]];
+
       if (checkImportForRequiredColumns(firstSheet[0])) {
 
         firstSheet.forEach(newRecord => {

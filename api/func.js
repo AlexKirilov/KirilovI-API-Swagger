@@ -29,13 +29,13 @@ const func = {
 
     let SiteData = `${user.levelAuth} ${site.publicKey}`;
     let WebSite = `ID ${site._id}`;
-    let token = jwt.encode(payload, encrKey);
+    let token= jwt.encode(payload, encrKey);
     let username = user.lastname == "" ? user.firstname : user.lastname;
     return res.status(200).send({ token, SiteData, WebSite, username });
   },
   auto: (req, res) => {
     if (!req.header("Authorization")) return false;
-    let token = req.header("Authorization").split(" ")[1]; // [0] removing the 'token' string
+    let token= req.header("Authorization").split(" ")[1]; // [0] removing the 'token' string
     let siteData = req.header("SiteData").split(" "); // [0] LevelOfAuth + [1] Public Key
     let siteID = req.header("WebSite").split(" ")[1]; // [0] removing the 'ID' string
     let levelOfAuth = siteData[0]; //SA, AD, MN, CU
@@ -50,7 +50,7 @@ const func = {
     if (!req.header("Authorization"))
       return res.status(401).send(variables.errorMsg.unauthorized);
     try {
-      let token = req.header("Authorization").split(" ")[1]; // [0] removing the 'token' string
+      let token= req.header("Authorization").split(" ")[1]; // [0] removing the 'token' string
       let siteData = req.header("SiteData").split(" "); // [0] LevelOfAuth + [1] Public Key
       let siteID = req.header("WebSite").split(" ")[1]; // [0] removing the 'ID' string
       let levelOfAuth = siteData[0]; //SA, AD, MN, CU
@@ -74,7 +74,7 @@ const func = {
       return res.status(402).send(variables.errorMsg.unauthorized);
     try {
       const loginData = req.body.data;
-      let token = loginData.cid; // [0] removing the 'token' string
+      let token= loginData.cid; // [0] removing the 'token' string
       let siteData = loginData.sd.split("-"); // [0] LevelOfAuth + [1] Public Key
       let siteID = loginData.sid;
       let levelOfAuth = siteData[0]; //SA, AD, MN, CU

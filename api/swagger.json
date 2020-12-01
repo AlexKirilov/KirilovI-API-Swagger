@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
     "title": "Kirilovi-08 API",
@@ -9,23 +9,192 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:4567",
-  "basePath": "/",
   "tags": [
     {
-      "name": "Users",
-      "description": "API for users in the system"
+      "name": "Products",
+      "description": "Individual Products CRUD operations"
+    },
+    {
+      "name": "File",
+      "description": "Insert/Export data"
     }
   ],
-  "schemes": [
-    "http",
-    "https"
+  "servers": [
+    {
+      "url": "http://localhost:4567",
+      "description": "Local API"
+    },
+    {
+      "url": "https://web-api-be.herokuapp.com/store",
+      "description": "Internal Production"
+    }
   ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
+  "components": {
+    "securitySchemes": {
+      "TokenAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      },
+      "WebSiteAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "WebSite"
+      },
+      "SiteIDAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "SiteData"
+      }
+    },
+    "schemas": {
+      "ProductDTO": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "siteID",
+          "categoryID"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "categoryID": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pack": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sizes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "price": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "imgURL": {
+            "type": "string"
+          },
+          "iconURL": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          }
+        },
+        "xml": {
+          "name": "ProductDTO"
+        }
+      },
+      "ProductListDTO": {
+        "type": "object",
+        "required": [
+          "siteID",
+          "categoryID"
+        ],
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "default": 1
+          },
+          "perPage": {
+            "type": "number",
+            "default": 15
+          },
+          "sort": {
+            "type": "string",
+            "default": "name_property"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "uniqueItems": true
+                },
+                "categoryID": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "pack": {
+                  "type": "string"
+                },
+                "sort": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "sizes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "price": {
+                  "type": "number"
+                },
+                "discount": {
+                  "type": "number"
+                },
+                "imgURL": {
+                  "type": "string"
+                },
+                "iconURL": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "companies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "TokenAuth": []
+    },
+    {
+      "SiteIDAuth": []
+    },
+    {
+      "WebSiteAuth": []
+    }
   ],
   "paths": {
     "/products": {
@@ -37,9 +206,22 @@
         "description": "Data can be filtered by Category or/and containing ProductName substring. Data can be sort by each property with descending or ascending data direction",
         "responses": {
           "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/ProductListDTO"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -61,9 +243,23 @@
         "description": "",
         "responses": {
           "200": {
-            "description": "New products were inserted",
-            "schema": {
-              "$ref": "#/definitions/ProductListDTO"
+            "description": "New product wwas inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "401": {
@@ -82,7 +278,24 @@
         "description": "By specifing the categoryID, all connected products will be deleted. Or skipping the property data will remove all products connected with the website",
         "responses": {
           "200": {
-            "description": "Were deleted successfully"
+            "description": "Were deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -106,8 +319,22 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/ProductDTO"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "404": {
@@ -124,8 +351,22 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/ProductDTO"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "404": {
@@ -142,8 +383,22 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/ProductDTO"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "404": {
@@ -163,140 +418,65 @@
           }
         }
       }
-    }
-  },
-  "definitions": {
-    "ProductDTO": {
-      "type": "object",
-      "$ref": "#/definitions/ProductDTO",
-      "required": [
-        "_id",
-        "name",
-        "siteID",
-        "categoryID"
-      ],
-      "properties": {
-        "_id": {
-          "type": "string",
-          "uniqueItems": true
-        },
-        "categoryID": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "pack": {
-          "type": "string"
-        },
-        "sort": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "sizes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "price": {
-          "type": "number"
-        },
-        "discount": {
-          "type": "number"
-        },
-        "imgURL": {
-          "type": "string"
-        },
-        "iconURL": {
-          "type": "string"
-        },
-        "details": {
-          "type": "string"
-        },
-        "quantity": {
-          "type": "number"
-        }
-      }
     },
-    "ProductListDTO": {
-      "type": "object",
-      "$ref": "#/definitions/ProductListDTO",
-      "required": [
-        "siteID",
-        "categoryID"
-      ],
-      "properties": {
-        "currentPage": {
-          "type": "number",
-          "default": 1
-        },
-        "perPage": {
-          "type": "number",
-          "default": 15
-        },
-        "sort": {
-          "type": "string",
-          "direction": "desc",
-          "default": "name_property"
-        },
-        "results": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "string",
-                "uniqueItems": true
-              },
-              "categoryID": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "pack": {
-                "type": "string"
-              },
-              "sort": {
-                "type": "array",
-                "items": {
-                  "type": "string"
+    "/files/import": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Insert Data from a file",
+        "description": "Insert data to the Database from a Excel files '.xlsx' and '.csv'. All files must contain ['name', 'price', 'quantity'] columns. All extra columns will be added as well to the Database!!!",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "base64"
+                  }
                 }
-              },
-              "sizes": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "price": {
-                "type": "number"
-              },
-              "discount": {
-                "type": "number"
-              },
-              "imgURL": {
-                "type": "string"
-              },
-              "iconURL": {
-                "type": "string"
-              },
-              "details": {
-                "type": "string"
-              },
-              "quantity": {
-                "type": "number"
               }
             }
           }
         },
-        "companies": {
-          "type": "array",
-          "items": {
-            "type": "string"
+        "responses": {
+          "200": {
+            "description": "X number of records were added to the Product table"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      }
+    },
+    "/files/export": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Export DB Data to a json file",
+        "description": "Export DB Data to a json file. Data can be filtered by All, Date, Category",
+        "responses": {
+          "200": {
+            "description": "X number of records are stored into a json file and it`s ready for downloading"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "404 Not Found"
           }
         }
       }
