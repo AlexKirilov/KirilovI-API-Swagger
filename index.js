@@ -50,7 +50,7 @@ app.use('/employees', employeeRoute());
 app.use('/products', productRoute());
 
 
-app.get('/', (req, res) => res.send('Welcome to my API'));
+// app.get('/', (req, res) => res.send('Welcome to my API'));
 
 app.listen(
   port, host,
