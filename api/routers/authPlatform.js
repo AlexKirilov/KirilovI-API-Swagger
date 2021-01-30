@@ -37,7 +37,6 @@ export function platformAuthRouter() {
 
     // ID`s must match completely to continue
     const errors = validationResult(req);
-    console.log(req.params.id , req.userId);
 
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });

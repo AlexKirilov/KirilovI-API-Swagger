@@ -105,7 +105,6 @@ export async function signUp(req, res) {
       const URI = `${req.protocol}://${req.get('host')}/platform/auth/verify/${confToken}`;
 
       sendMail(URI, req.body.email, (msg) => {
-        console.log(msg);
         return res.status(200).send(msg);
       });
 

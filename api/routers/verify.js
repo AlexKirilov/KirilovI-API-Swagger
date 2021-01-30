@@ -13,10 +13,6 @@ export function verifyAuthRoute() {
     check("notifyOnReply").toBoolean();
 
     const errors = validationResult(req);
-    console.log('VAL ERRors', errors);
-    console.log('Req', req._id);
-    console.log('Req', req.id);
-    console.log('Req', req.params._id);
 
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });

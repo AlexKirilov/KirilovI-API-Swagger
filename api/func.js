@@ -30,7 +30,6 @@ const resentHTML = (expTime, verifyURL, deleteURL) => `
 `
 
 export function sendMail(URI, sendTo, callback = (s) => s) {
-  console.log('process.env', process.env)
   // Create a SMTP transporter object
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -87,29 +86,23 @@ export function validateConfirmationToken(req, res, next) {
       if (err !== undefined && err !== null) {
         return res.send(500).send(err);
       } else if (new Date().getTime() >= conf.exp) {
-        console.log('Validate confirmation token Error', err);
         const tokenData = jsonwebtoken.decode(token);
         const confToken = createConfirmationToken(tokenData);
         const newVerifyLink = `${req.protocol}://${req.get('host')}/platform/auth/verify/${confToken}`;
         const deleteLink = `${req.protocol}://${req.get('host')}/platform/auth/delete/${confToken}`;
         const expDate = new Date(tokenData.exp).toLocaleString().toString();
-        console.log('EXP DATE => ', expDate);
 
         return res.send(resentHTML(expDate, newVerifyLink, deleteLink));
       } else {
-        console.log('Validate confirmation token Token Data', conf);
         req._id = conf._id;
         req.email = conf.email;
         req.params._id = conf._id;
         req.params.email = conf.email;
-        console.log('Validate confirmation token Token Data', req._id);
-        console.log('/////////////////////////////////////////////');
 
         next();
       }
     });
   } catch (err) {
-    console.log('Some Error occurred', err);
     return res.status(401).send(err);
   }
 };

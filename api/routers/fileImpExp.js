@@ -22,7 +22,6 @@ export function fileRouter() {
       return res.status(422).json({ errors: errors.array() });
     } else if (req.siteID) {
       const editLevel = Site.findById(req.siteID);
-      console.log('editLevel', editLevel)
       if (checkAuthLevelAsAuth(editLevel.editProd, req.authLevel)) return next();
       else return res.sendStatus(401);
     } else {
