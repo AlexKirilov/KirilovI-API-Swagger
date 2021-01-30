@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const productsSchema = new mongoose.Schema({
     siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site'},
@@ -18,4 +18,4 @@ const productsSchema = new mongoose.Schema({
     lastEditDate: { type: Date, default: new Date() },
 });
 
-module.exports = mongoose.model('Products', productsSchema);
+export default mongoose.model('Products', productsSchema);

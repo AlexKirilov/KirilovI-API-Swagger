@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-var SiteSchema = new mongoose.Schema({
+const SiteSchema = new mongoose.Schema({
     type: { type: mongoose.Schema.Types.ObjectId, ref: 'SiteType'},
     name: { type: String, default: '' },
     editProd: { type: String, default: 'MN' },
@@ -8,4 +8,4 @@ var SiteSchema = new mongoose.Schema({
     publicKey: { type: String, default: '' },
 });
 
-module.exports = mongoose.model('Site', SiteSchema);
+export default mongoose.model('Site', SiteSchema);

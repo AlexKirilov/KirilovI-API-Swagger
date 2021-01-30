@@ -1,4 +1,4 @@
-var variables = {
+export const variables = {
     masterKey: '123',
     customerkey: '456',
     errorMsg: {
@@ -19,8 +19,6 @@ var variables = {
         remove: { message: 'Data was successfully deleted.' },
     }
 }
-
-module.exports = variables;
 
 /*
     200 OK

@@ -1,72 +1,64 @@
-const func = require('../func');
-const express = require('express');
-const productRoute = express.Router();
-const { check, validationResult } = require("express-validator");
+import { getSiteID, validateToken } from '../func.js';
+import { Router } from 'express';
+import { check, validationResult } from "express-validator";
 
-const productController = require('../controllers/products');
-const productControllerByID = require('../controllers/productsByID');
+import Products from "../models/Products.js";
+import productController from '../controllers/productCTRL.js';
+import productControllerByID from '../controllers/productByID.js';
 
-function routes() {
-  const Products = require('../models/Products');
-  const controller = productController(Products);
-  const controllerByID = productControllerByID(Products);
+const router = Router();
+const skipDetails = '-__v -siteID ';
+// TODO List
+/**
+ *  Only EE or higher can update products data
+ *  All levels can get Product
+ * 
+ *  requires siteID to be provided on 100%;
+ */
 
-  productRoute.use('/', func.getSiteID, (req, res, next) => {
-    check("siteID").not().isEmpty().isString();
+export function productRoute() {
+  const controller = productController();
+  const controllerByID = productControllerByID();
+
+  router.route('/')
+    .get(getSiteID, controller.get)
+    .post(validateToken, controller.post)
+    .delete(validateToken, controller.remove);
+
+  router.use('/:id', getSiteID, (req, res, next) => {
     check("notifyOnReply").toBoolean();
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    } else if (req.siteID) {
-      return next();
-    } else {
-      return res.sendStatus(403);
-    }
-  });
-
-  productRoute.route('/')
-  .get(controller.get)
-  .post(func.checkAuthenticated, controller.post)
-  .delete(func.checkAuthenticated, controller.remove);
-
-  productRoute.use('/:id', func.getSiteID, (req, res, next) => {
-    check("siteID").not().isEmpty().isString();
-    check("notifyOnReply").toBoolean();
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     } else if (req.params.id && req.siteID) {
-      Products.findOne({ _id: req.params.id, siteID: req.siteID }).exec().then( (err, product) => {
-        if (err) return res.send(err);
-        req.product = product;
-        if (!product) return res.sendStatus(404);
-        else return next();
-      })
-      .catch((err) => res.status(500).send(err));
+      Products.findOne({ _id: req.params.id, siteID: req.siteID }, skipDetails).exec()
+        .then((product, err) => {
+          if (err) return res.status(500).send(err);
+          req.product = product;
+          if (!product) return res.sendStatus(404);
+          else return next();
+        })
+        .catch((err) => res.status(500).send(err));
     } else {
       return res.sendStatus(403);
     }
   });
 
-  productRoute.route('/:id')
+  router.route('/:id')
     .get((req, res) => res.json(req.product))
-    .put(func.checkAuthenticated, controllerByID.put)
-    .patch(func.checkAuthenticated, controllerByID.patch)
-    .delete(func.checkAuthenticated, (req, res) => {
-        check("userId").not().isEmpty().isString();
-        check("authLevel").not().isEmpty().isString().isLength({ min: 2, max: 3 });
+    .put(validateToken, controllerByID.put)
+    .patch(validateToken, controllerByID.patch)
+    .delete(validateToken, (req, res) => {
+      check("userId").not().isEmpty().isString();
+      check("authLevel").not().isEmpty().isString().isLength({ min: 2, max: 3 });
 
-        if (!req.userId || !req.authLevel) {
-          return res.sendStatus(403);
-        } else {
-          return controllerByID.remove(req, res);
-        }
+      if (!req.userId || !req.authLevel) {
+        return res.sendStatus(403);
+      } else {
+        return controllerByID.remove(req, res);
       }
+    }
     );
 
-  return productRoute;
+  return router;
 }
-
-module.exports = routes();

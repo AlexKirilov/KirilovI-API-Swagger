@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head></head>
+<body>
+  <button>This is a verify button</button>
+  <div id="test">
+  </div>
+  <script type="text/javascript">
+      fetch(window.location.href)
+      .then( (result) => {
+          console.log('success:', result)
+          let div=document.getElementById('test');
+          div.innerHTML=`Link: ${result.link}`;
+      })
+      .catch(error => console.log('error:', error));
+  </script>
+</body>
+</html>

@@ -2,7 +2,6 @@
 import { convertSort } from "../func.js";
 import Customers from '../models/Customers.js';
 import { check, validationResult, body } from "express-validator";
-
 const skipDetails = '-__v -GDPR -siteID -password -company';
 
 function controller() {
@@ -11,45 +10,47 @@ function controller() {
     // TODO: Version 3 - Update filter and Sort options
 
     let by = {
-      siteID: req.siteID
+      siteID: req.siteID,
+      levelAuth: 'CU'
     };
 
     const query = req.query;
-    const employeeData = req.body;
-    const page = parseInt(query.page || employeeData.page) || 1;
-    const sort = convertSort(query.sort || employeeData.sortBy || {});
-    const perPage = parseInt(query.perPage || employeeData.perPage) || 25;
+    const customerData = req.body;
+    const page = parseInt(query.page || customerData.page) || 1;
+    const sort = convertSort(query.sort || customerData.sortBy || {});
+    const perPage = parseInt(query.perPage || customerData.perPage) || 25;
     const skip = page == 1 ? 0 : (page - 1) * perPage;
 
-    if (!!employeeData.name) {
-      by.firstname = { $regex: employeeData.name, $options: "i" };
-      by.lastname = { $regex: employeeData.name, $options: "i" };
+    if (!!customerData.name) {
+      by.firstname = { $regex: customerData.name, $options: "i" };
+      by.lastname = { $regex: customerData.name, $options: "i" };
     }
-    if (!!employeeData.email) {
-      by.email = { $regex: employeeData.name, $options: "i" };
+    if (!!customerData.email) {
+      by.email = { $regex: customerData.name, $options: "i" };
     }
 
-    const employeeSize = await Customers.countDocuments(by);
-    const employeeList = await Customers.find(by, skipDetails)
+    const customerSize = await Customers.countDocuments(by);
+    const customerList = await Customers
+      .find(by, skipDetails)
       .sort(sort)
       .skip(skip)
       .limit(20)
       .exec();
 
-    if (!employeeList && !employeeList.length) {
+    if (!customerList && !customerList.length) {
       return res.status(404).send([]);
     }
 
     return res.status(200).send({
-      rows: employeeSize,
-      pages: Math.ceil(employeeSize / perPage),
+      rows: customerSize,
+      pages: Math.ceil(customerSize / perPage),
       page: page,
       perPage: perPage,
-      displayedRows: employeeList.length,
+      displayedRows: customerList.length,
       firstrowOnPage: page <= 1 ? 1 : (page - 1) * perPage + 1,
-      lastRowOnPage: page * perPage - 1 > employeeSize ? employeeSize : page * perPage - 1,
+      lastRowOnPage: page * perPage - 1 > customerSize ? customerSize : page * perPage - 1,
       sortBy: sort,
-      results: employeeList
+      results: customerList
     });
   }
 
@@ -68,11 +69,9 @@ function controller() {
 
       // Check if the user email exists
       if (!(await Customers.findOne({ email: data.email }).exec())) {
-        if (!data.levelAuth || data.levelAuth === "") data.levelAuth = 'EE'
 
         const newEmployee = {
           email: data.email,
-          siteID: req.siteID,
           created: new Date(),
           lastLogin: null,
           password: data.password,
@@ -80,7 +79,7 @@ function controller() {
           lastname: data.lastname,
           fullname: data.firstname + " " + data.lastname,
           company: data.company ? data.company : null,
-          levelAuth: data.levelAuth ? data.levelAuth : 'EE',
+          levelAuth: 'CU',
           type: data.type ? data.type : null,
           GDPR: data.GDPR ? data.GDPR : false,
           personalDiscount: data.personalDiscount ? data.personalDiscount : 0,
@@ -107,7 +106,6 @@ function controller() {
           return res.status(200).json({
             message: "Employee was created"
           })
-          // TODO: Send confirmation email to the user and the token must exp after a day
         }).catch((err) => {
           // logMSG({
           //   siteID: req.siteID,
@@ -127,16 +125,17 @@ function controller() {
     }
   }
 
-  function remove(req, res) {
+  async function remove(req, res) {
     let by = {};
     by.siteID = req.siteID;
+    by.levelAuth = 'CU'
 
     const _ids = req.body && req.body.ids ? req.body.ids : null;
     if (_ids && _ids.length) {
       by._id = { $in: _ids }
     }
 
-    Customers.deleteMany(by, (err, result) => {
+    await Customers.deleteMany(by, (err, result) => {
       if (err) return res.status(500).send(err);
       return res.status(200).json({
         message: `${result.deletedCount} employees were deleted`

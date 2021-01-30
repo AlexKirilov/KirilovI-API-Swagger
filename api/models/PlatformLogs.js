@@ -1,10 +1,10 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 const LogType = 'Product' | 'Customer' | 'Invoices' | null;
 const LogLevel = 'Information' | 'Warning' | 'Error' | 'Fatal' | null;
 // const requestType = 'GET' | 'POST' | 
 
-var SiteLogsSchema = new mongoose.Schema({
+var PlatformLogsSchema = new mongoose.Schema({
     siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site'},
     customerID: { type: mongoose.Schema.Types.ObjectId, ref: 'Customers'},
     logType: { type: String, default: null }, // LogType
@@ -15,4 +15,4 @@ var SiteLogsSchema = new mongoose.Schema({
     logDateTime: { type: Date, default: new Date ().toISOString() },
 });
 
-export default mongoose.model('Logs', SiteLogsSchema);
+export default mongoose.model('PlatformLogs', PlatformLogsSchema);

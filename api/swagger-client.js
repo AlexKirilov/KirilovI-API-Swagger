@@ -1,8 +1,8 @@
-{
+export default {
   "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "Kirilovi-08 API",
+    "title": "Client API Requests",
     "description": "API for different types of E-Commerce WebSites",
     "license": {
       "name": "MIT",
@@ -12,15 +12,11 @@
   "tags": [
     {
       "name": "Products",
-      "description": "Individual Products CRUD operations"
+      "description": "CRUD operations"
     },
     {
-      "name": "Employee",
-      "description": "CRUD with Employees Data"
-    },
-    {
-      "name": "File",
-      "description": "Insert/Export data"
+      "name": "Customers",
+      "description": "CRUD operations"
     }
   ],
   "servers": [
@@ -55,19 +51,10 @@
       "ProductDTO": {
         "type": "object",
         "required": [
-          "_id",
           "name",
-          "siteID",
           "categoryID"
         ],
         "properties": {
-          "_id": {
-            "type": "string",
-            "uniqueItems": true
-          },
-          "categoryID": {
-            "type": "string"
-          },
           "name": {
             "type": "string"
           },
@@ -190,7 +177,6 @@
       "EmployeeDTO": {
         "type": "object",
         "required": [
-          "_id",
           "firstname",
           "lastname",
           "password"
@@ -199,9 +185,6 @@
           "_id": {
             "type": "string",
             "uniqueItems": true
-          },
-          "siteID": {
-            "type": "string"
           },
           "email": {
             "type": "string"
@@ -357,7 +340,7 @@
         "tags": [
           "Products"
         ],
-        "summary": "Pagination all products",
+        "summary": "Listing products",
         "description": "Data can be filtered by Category or/and containing ProductName substring. Data can be sort by each property with descending or ascending data direction",
         "responses": {
           "200": {
@@ -395,7 +378,26 @@
           "Products"
         ],
         "summary": "Add new product",
-        "description": "",
+        "description": "Employes or higher rank can add a new product.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "New product wwas inserted",
@@ -429,8 +431,32 @@
         "tags": [
           "Products"
         ],
-        "summary": "Delete Products by Category or Web Site",
-        "description": "By specifing the categoryID, all connected products will be deleted. Or skipping the property data will remove all products connected with the website",
+        "summary": "Delete Products",
+        "description": "Only Employes or higher rank can delete products. Deletion list can be filtered by categoryID, all. To delete all send empty object, or send the categoryID to delete all products connected to it.",
+        "parameters": [
+          {
+            "name": "categoryID",
+            "in": "query",
+            "description": "All products will be delete by selected category",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "5fc40c273c46850014c40313"
+            }
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "Multiple product ids can be provide as an array",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "'5fc40c273c46850014c40313'"
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Were deleted successfully",
@@ -464,13 +490,22 @@
         }
       }
     },
-    "/products/:id": {
+    "/products/{id}": {
       "get": {
         "tags": [
           "Products"
         ],
         "summary": "Take product by productID",
         "description": "Return product object",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The product ID",
+            "type": "string",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -503,6 +538,34 @@
         ],
         "summary": "Product details update by productID",
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The product ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -535,6 +598,34 @@
         ],
         "summary": "Partial product data update by productID",
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The product ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -567,6 +658,15 @@
         ],
         "summary": "Delete Products by Category or Web Site",
         "description": "By specifing the categoryID, all connected products will be deleted. Or skipping the property data will remove all products connected with the website",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The product ID",
+            "type": "string",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "Were deleted successfully"
@@ -574,75 +674,44 @@
         }
       }
     },
-    "/files/import": {
-      "post": {
-        "tags": [
-          "File"
-        ],
-        "summary": "Insert Data from a file",
-        "description": "Insert data to the Database from a Excel files '.xlsx' and '.csv'. All files must contain ['name', 'price', 'quantity'] columns. All extra columns will be added as well to the Database!!!",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "base64"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "X number of records were added to the Product table"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "404 Not Found"
-          }
-        }
-      }
-    },
-    "/files/export": {
-      "post": {
-        "tags": [
-          "File"
-        ],
-        "summary": "Export DB Data to a json file",
-        "description": "Export DB Data to a json file. Data can be filtered by All, Date, Category",
-        "responses": {
-          "200": {
-            "description": "X number of records are stored into a json file and it`s ready for downloading"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "404 Not Found"
-          }
-        }
-      }
-    },
-    "/employees": {
+    "/customers": {
       "get": {
         "tags": [
-          "Employee"
+          "Customers"
         ],
-        "summary": "Pagination all employees",
-        "description": "Data can be filtered by employeeName and/or email substrings. Data can be sort by each property with descending or ascending data direction",
+        "summary": "Pagination all customers",
+        "description": "Data can be filtered by customers Name and/or email substrings. Data can be sort by each property with descending or ascending data direction",
+        "parameters": [
+          {
+            "name": "currentPage",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "Records per page",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": 15
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Accept property_name + direction (asc / desc)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "created asc"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -676,13 +745,32 @@
       },
       "post": {
         "tags": [
-          "Employee"
+          "Customers"
         ],
-        "summary": "Add new employee",
-        "description": "",
+        "summary": "Add new customers",
+        "description": "To add new customers, an user with level manager or higher have to create the new account with a temporary password. After login the new employee have to change the password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "New employee was added",
+            "description": "New customers was added",
             "content": {
               "application/json": {
                 "schema": {
@@ -696,7 +784,7 @@
               },
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/EmployeeDTO"
                 }
               }
             }
@@ -711,13 +799,13 @@
       },
       "delete": {
         "tags": [
-          "Employee"
+          "Customers"
         ],
-        "summary": "Delete all employees",
+        "summary": "Delete all customers",
         "description": "Äll employes connected to selected website will be removed",
         "responses": {
           "200": {
-            "description": "X employees were removed from the database 'successfully'",
+            "description": "X customers were removed from the database 'successfully'",
             "content": {
               "application/json": {
                 "schema": {
@@ -748,13 +836,22 @@
         }
       }
     },
-    "/employees/:id": {
+    "/customers/{id}": {
       "get": {
         "tags": [
-          "Employee"
+          "Customers"
         ],
-        "summary": "Take employee by ID",
-        "description": "Returns data for selected employee",
+        "summary": "Take customer by ID",
+        "description": "Returns data for selected customer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The customer ID",
+            "type": "string",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -783,10 +880,38 @@
       },
       "put": {
         "tags": [
-          "Employee"
+          "Customers"
         ],
-        "summary": "Update employee details by ID",
+        "summary": "Update customer details by ID",
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The customer ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -815,10 +940,38 @@
       },
       "patch": {
         "tags": [
-          "Employee"
+          "Customers"
         ],
-        "summary": "To update partial employee data",
+        "summary": "To update partial customer data",
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The customer ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -847,10 +1000,19 @@
       },
       "delete": {
         "tags": [
-          "Employee"
+          "Customers"
         ],
-        "summary": "Delete selected employee",
-        "description": "By providing the employee id, all records connected to it will be removed from the database",
+        "summary": "Delete selected customer",
+        "description": "By providing the customer id, all records connected to it will be removed from the database",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The customer ID",
+            "type": "string",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "Employee_data was deleted successfully"
