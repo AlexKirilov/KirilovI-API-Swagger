@@ -21,9 +21,6 @@ import { employeeRoute } from "./api/routers/employees.js";
 
 // Remaining
 import { productRoute } from "./api/routers/products.js";
-import dotenv from 'dotenv';
-
-dotenv.config({ path: './config/variables.env'});
 
 const app = express();
 app.use(cors());
