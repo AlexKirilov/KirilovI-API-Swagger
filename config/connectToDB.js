@@ -1,13 +1,9 @@
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-
-dotenv.config({ path: 'variables.env'});
 
 mongoose.set('useCreateIndex', true);
 mongoose.Promise = Promise;
 
 export async function connectDB() {
-    // process.env.MONGODB_URI || devEnv, // Removing devEnv because of Heroku issue
     await mongoose.connect(
     process.env.MONGODB_URI, 
     { 
