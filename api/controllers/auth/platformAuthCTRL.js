@@ -11,22 +11,24 @@ import {
   generatePublicKey, sendMail, setLogMSG
 } from '../../func.js';
 
-// TODO: Add active check if not send new email with confirmation message and url
+// TODO: Platform Login/Sign - SiteID to be removed from the requirements ---- It`s the PLAT UI
 export async function signIn(req, res) {
   check('email').isString().isEmail().normalizeEmail();
   check('password').isString().trim().isLength({ min: 5 }).escape();
-  check('siteID').isString().trim().isLength({ min: 5, max: 28 }).escape();
+  check('company').isString().trim().isLength({ min: 2 }).escape();
   body('notifyOnReply').toBoolean();
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
-  } else {
-    const loginData = req.body;
+  } else {  
+    const userData = await Auth.findOne({ email: req.email })
+    .select('lastLogin siteID password levelAuth _id lastname firstname active')
 
-    const siteData = await Site.findById(loginData.siteID).map(s => {
+    const siteData = await Site.findById(userData.siteID).map(s => {
       return {
         publicKey: s.publicKey,
+        company: s.name,
         _id: s._id
       }
     }).catch(err => {
@@ -36,15 +38,15 @@ export async function signIn(req, res) {
 
     if (!siteData) {
       return res.status(404).json({ message: 'No valid entry found for provided Site ID' });
+    } else if (req.company.toLowerCase() !==  siteData.company.toLowerCase()) {
+      return res.status(403).json({ message: `Company name doesn't match with our records` });
     }
 
-    const userData = await Auth.findOne({ email: loginData.email })
-    .select('lastLogin siteID password levelAuth _id lastname firstname active')
 
     if (!userData) {
       return res.status(404).send(variables.errorMsg.notfound);
     } else {
-      compare(loginData.password, userData.password, (err, isMatch) => {
+      compare(req.password, userData.password, (err, isMatch) => {
         if (err) return res.status(500).send(err);
         if (!isMatch) {
           return res.status(401).send(variables.errorMsg.unauthorized);
@@ -65,10 +67,6 @@ export async function signIn(req, res) {
     }
   }
 };
-
-export function tokenRefresh(req, res) {
-  return refreshToken(req, res);
-}
 
 export async function signUp(req, res) {
   check('email').isEmail().normalizeEmail();
@@ -96,7 +94,8 @@ export async function signUp(req, res) {
       // Create Auth account
       const auth = new Auth(req.body);
       auth.levelAuth = 'AD';
-      auth.lastLogin = auth.created = new Date();
+      auth.lastLogin = null;
+      auth.created = new Date();
       auth.siteID = site._id;
       await auth.save();
 
@@ -115,6 +114,10 @@ export async function signUp(req, res) {
   }
 }
 
+export function tokenRefresh(req, res) {
+  return refreshToken(req, res);
+}
+
 
 
 export function passReset(req, res) {
@@ -128,8 +131,4 @@ export function verifyPassReset(req, res) {
   // verify the new password
   // update the user password
   // send confirmation email for the reset password
-}
-
-export function deleteUser(req, res) {
-  // For testing purposes only
 }

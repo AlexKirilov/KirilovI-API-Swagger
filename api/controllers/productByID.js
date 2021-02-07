@@ -10,7 +10,7 @@ function controller() {
       const product = req.product;
 
       const minProperties = [
-        'name', 'pack', 'sizes', 'price', "details", "quantity", "categoryID"
+        "productDetails", "categoryID"
       ];
 
       const objCheck = checkObjectProperties(req.body, minProperties);
@@ -19,16 +19,10 @@ function controller() {
           message: `Following properties '${objCheck.join("', '")}' are missing.`
         });
 
-      product.name = newProd.name || null;
-      product.pack = newProd.pack || null;
-      product.sizes = newProd.sizes || null;
-      product.price = newProd.price || null;
-      product.imgURL = newProd.imgURL || null;
-      product.iconURL = newProd.iconURL || null;
-      product.details = newProd.details || null;
-      product.discount = newProd.discount || null;
-      product.quantity = newProd.quantity || null;
+      product.productName = newProd.productName || null;
+      product.productDetails = { ...product, productDetails: newProd.productDetails };
       product.categoryID = newProd.categoryID || null;
+      product.lastEditDate = new Date().toISOString();
 
       Products.findByIdAndUpdate(req.params.id, product, (err, result) => {
         if (err) return res.send(err)
@@ -68,7 +62,7 @@ function controller() {
 
     Products.deleteOne(by, (err, result) => {
       if (err) return res.status(500).send(err);
-      else return  res.status(200).send(messages.remove);
+      else return res.status(200).send(messages.remove);
     });
 
     // if (func.checkAuthLevelAsAuth(req.siteID, req.authLevel)) {

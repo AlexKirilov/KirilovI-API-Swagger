@@ -27,7 +27,7 @@ const resentHTML = (expTime, verifyURL, deleteURL) => `
 <form action="${deleteURL}">
     <input type="submit" value="Delete my account" />
 </form>
-`
+`;
 
 export function sendMail(URI, sendTo, callback = (s) => s) {
   // Create a SMTP transporter object
@@ -160,7 +160,7 @@ export function refreshToken(req, res) {
       s_id: `${tokenData.s_id}`,
       lvl: `${tokenData.lvl}`
     }, encrKey, { expiresIn: '1h' });
-    return res.status(200).send({ token: `Bearer ${newToken}`});
+    return res.status(200).send({ token: `Bearer ${newToken}` });
   } catch (err) {
     return res.status(500).send(err);
   }
@@ -248,6 +248,21 @@ export function generatePublicKey() {
     key += chars[Math.floor(Math.random() * chars.length)];
   }
   return key;
+}
+
+export function signInBase64Encoding(req, res, next) {
+  if (!req.headers.siteid || (!req.params && !req.params.base))
+    return res.status(401).send(variables.errorMsg.unauthorized);
+
+    const buff = new Buffer.from(req.params.base, 'base64');
+    const params = JSON.parse(buff.toString('ascii'));
+
+    req.email = params.email;
+    req.company = params.company;
+    req.password = params.password;
+    req.siteID = req.headers.siteid;
+
+    next()
 }
 
 /*

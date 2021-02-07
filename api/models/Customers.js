@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import { hash as _hash } from 'bcrypt-nodejs';
 
-var customerSchema = new mongoose.Schema({
+const customerSchema = new mongoose.Schema({
     siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site', required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },

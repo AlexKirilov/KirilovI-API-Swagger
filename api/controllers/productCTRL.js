@@ -42,14 +42,21 @@ function controller() {
 
         // add customer discount to each product
         products.forEach(item => item.discount = customerDiscount);
-
+        // currentPage:
+        // pageCount:
+        // pageSize:
+        // rowCount:
+        // orderByColumn:
+        // firstRowOnPage:
+        // lastRowOnPage:
+        
         return res.status(200).send({
-          rows: productSize,
+          row: productSize,
           pages: Math.ceil(productSize / perPage),
-          page: page,
+          currentPage: page,
           perPage: perPage,
           displayedRows: products.length,
-          firstrowOnPage: page <= 1 ? 1 : (page - 1) * perPage + 1,
+          firstRowOnPage: page <= 1 ? 1 : (page - 1) * perPage + 1,
           lastRowOnPage: page * perPage - 1 > productSize ? productSize : page * perPage - 1,
           sortBy: sort,
           results: products

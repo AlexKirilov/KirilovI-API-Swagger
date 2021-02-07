@@ -12,7 +12,6 @@ const AuthSchema = new mongoose.Schema({
   password: { type: String, required: true },
   firstname: { type: String, default: '' },
   lastname: { type: String, default: '' },
-  company: { type: String, default: '' },
   levelAuth: { type: String, default: 'EE' },
   created: { type: Date, default: new Date().toISOString() },
   lastLogin: { type: Date, default: new Date().toISOString() },

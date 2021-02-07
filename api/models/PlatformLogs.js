@@ -4,7 +4,7 @@ const LogType = 'Product' | 'Customer' | 'Invoices' | null;
 const LogLevel = 'Information' | 'Warning' | 'Error' | 'Fatal' | null;
 // const requestType = 'GET' | 'POST' | 
 
-var PlatformLogsSchema = new mongoose.Schema({
+const PlatformLogsSchema = new mongoose.Schema({
     siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site'},
     customerID: { type: mongoose.Schema.Types.ObjectId, ref: 'Customers'},
     logType: { type: String, default: null }, // LogType

@@ -8,9 +8,10 @@
  * 3. Employees
  */
 import { Router } from 'express';
-import { validateToken } from "../func.js";
+import { validateToken, signInBase64Encoding } from "../func.js";
 import { check, validationResult } from "express-validator";
 import Auth from "../models/Auth.js";
+import { variables } from "../var.js";
 
 import {
   signIn, tokenRefresh,
@@ -25,7 +26,14 @@ const skipDetails = '-__v -siteID -password -company -created -lastLogin -crypto
 export function platformAuthRouter() {
   const userController = platformAuthByID();
 
-  router.route('/sign-in').post(signIn);
+  router.use("/sign-in/:base", signInBase64Encoding, async (req, res, next) => {
+    if (req.email && req.password && req.company)
+      next();
+    else
+      return res.status(401).send(variables.errorMsg.unauthorized);
+  });
+
+  router.route('/sign-in/:base').post(signIn);
   router.route('/refresh').post(tokenRefresh);
   router.route('/sign-up').post(signUp);
   router.route('/reset').post(passReset);
@@ -42,9 +50,9 @@ export function platformAuthRouter() {
       return res.status(422).json({ errors: errors.array() });
     } else if (req.params.id === req.userId) {
       Auth.findOne(
-        { _id: req.params.id, siteID: req.siteID }, 
+        { _id: req.params.id, siteID: req.siteID },
         skipDetails
-        ).exec()
+      ).exec()
         .then((user, err) => {
           req.user = user;
           if (err) return res.send(err);

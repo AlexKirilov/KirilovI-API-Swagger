@@ -1,80 +1,115 @@
 'use strict';
 import Site from '../../models/Site.js';
-import Auth from '../../models/Auth.js';
-import { onCatchCreateLogMSG, createToken } from '../../func.js';
+import Customer from '../../models/Customers.js';
+import { compare } from 'bcrypt-nodejs';
+// import nodemailer from "nodemailer";
+import * as variables from "../../var.js";
+import { check, validationResult, body } from "express-validator";
+import {
+  createToken, refreshToken,
+  createConfirmationToken, checkForExistingEmail,
+  sendMail, setLogMSG
+} from '../../func.js';
+// TODO: Page where the Site Owner can update the confirmation email details - Link will remain the same !!!
+// TODO: Add active check if not send new email with confirmation message and url
+export async function signIn(req, res) {
+  check('email').isString().isEmail().normalizeEmail();
+  check('password').isString().trim().isLength({ min: 5 }).escape();
+  check('siteID').isString().trim().isLength({ min: 5, max: 28 }).escape();
+  body('notifyOnReply').toBoolean();
 
-function controller() {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  } else {
+    const loginData = req.body;
 
-  async function login(req, res) {
-    check('email').isString().isEmail().normalizeEmail();
-    check('password').isString().trim().isLength({ min: 5 }).escape();
-    body('notifyOnReply').toBoolean();
+    const siteData = await Site.findById(loginData.siteID).map(s => {
+      return {
+        publicKey: s.publicKey,
+        _id: s._id
+      }
+    }).catch(err => {
+      // setLogMSG("WebSite", 'post', 'error', err, 'customer');
+      return res.status(500).json({ error: err });
+    });
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+    if (!siteData) {
+      return res.status(404).json({ message: 'No valid entry found for provided Site ID' });
+    }
+
+    const userData = await Customer.findOne({ email: loginData.email })
+      .select('lastLogin siteID password levelAuth _id lastname firstname active')
+
+    if (!userData) {
+      return res.status(404).send(variables.errorMsg.notfound);
     } else {
-      Auth.findOne({ email: loginData.email }) //, '-__v -firstname -lastname');
-        .select('lastLogin siteID password levelAuth _id')
-        .exec()
-        .then(owner => {
-          if (!owner) {
-            res.status(404).send(variables.errorMsg.notfound);
-          } else {
-
-            Site.findById(auth.siteID)
-              .exec()
-              .then(resultData => {
-                if (!resultData) {
-                  res.status(404).json({ message: 'No valid entry found for provided Email' });
-                } else {
-                  bcrypt.compare(loginData.password, auth.password, (err, isMatch) => {
-                    if (!isMatch) {
-                      return res.status(401).send(variables.errorMsg.unauthorized);
-                    } else {
-
-                      // Updating the last user login datetime
-                      owner.lastLogin = new Date();
-                      owner.update(owner, (err, newUser) => {
-                        if (err) return res.status(500).send(variables.errorMsg.update);
-                      });
-
-                      logMSG({
-                        level: 'information',
-                        message: `User with ID '${auth.id}' logged in successfully`,
-                        sysOperation: 'login',
-                        sysLevel: 'auth'
-                      });
-
-                      createToken(res, auth, resultData);
-                    }
-                  });
-                }
-              })
-              .catch(err => {
-                logMSG({
-                  level: 'error',
-                  message: onCatchCreateLogMSG(err),
-                  sysOperation: 'check',
-                  sysLevel: 'auth'
-                });
-                res.status(500).json({ error: err });
-              });
+      compare(loginData.password, userData.password, (err, isMatch) => {
+        if (err) return res.status(500).send(err);
+        if (!isMatch) {
+          return res.status(401).send(variables.errorMsg.unauthorized);
+        } else {
+          if (!userData.active) {
+            return res.status(402).send('Email is not confirmed yet.');
           }
-        }).catch(err => {
-          logMSG({
-            level: 'error',
-            message: onCatchCreateLogMSG(err),
-            sysOperation: 'check',
-            sysLevel: 'auth'
+
+          // Updating the last user login date-time
+          userData.lastLogin = new Date();
+          userData.updateOne(userData, (err, newUser) => {
+            if (err) return res.status(500).send(variables.errorMsg.update);
           });
-          res.status(500).json({ error: err });
-        });
+          // setLogMSG("WebSite", 'post', 'info', err, 'customer');
+          createToken(res, userData, siteData);
+        }
+      });
     }
   }
+};
 
+export async function signUp(req, res) {
+  check('email').isEmail().normalizeEmail();
+  check('password').isString().trim().isLength({ min: 5 }).escape();
+  check('lastname').not().isEmpty().isString().trim().escape();
+  check('siteID').isString().trim().isLength({ min: 5, max: 28 }).escape();
+  body('notifyOnReply').toBoolean();
 
-  return { login };
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  } else {
+    const isEmailExist = await checkForExistingEmail(req.body.email);
+    // Check for existing email
+    if (isEmailExist) {
+      return res.status(403).send({ message: 'Email already exists' });
+    }
+
+    try {
+      // Create customer account
+      const customer = new Customer(req.body);
+      customer.levelAuth = 'CU';
+      customer.lastLogin = null;
+      customer.created = new Date();
+      customer.siteID = req.siteID;
+      await customer.save();
+
+      // Send the confirm email
+      // TODO: Page where the Site Owner can update the confirmation email details
+      // Link will remain the same
+
+      const confToken = createConfirmationToken(customer);
+      const URI = `${req.protocol}://${req.get('host')}/auth/verify/${confToken}`;
+
+      sendMail(URI, req.body.email, (msg) => {
+        return res.status(200).send(msg);
+      });
+
+    } catch (err) {
+      return res.status(500).send(err);
+    }
+
+  }
 }
 
-export default controller;
+export function tokenRefresh(req, res) {
+  return refreshToken(req, res);
+}

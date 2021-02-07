@@ -11,13 +11,17 @@ export default {
   },
   "tags": [
     {
-      "name": "Products",
-      "description": "CRUD operations"
+      "name": "Auth",
+      "description": "Authorisation request connected only with the platform. Hidden from customers documentation"
     },
     {
       "name": "Customers",
       "description": "CRUD operations"
-    }
+    },
+    {
+      "name": "Products",
+      "description": "CRUD operations"
+    },
   ],
   "servers": [
     {
@@ -48,6 +52,150 @@ export default {
       }
     },
     "schemas": {
+      "LoginDTO": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "SiteID"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "required": true
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "required": true
+          },
+          "siteID": {
+            "type": "string",
+            "required": true
+          },
+        },
+        "xml": {
+          "name": "LoginDTO"
+        }
+      },
+      "AccountDTO": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "SiteID"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "required": true
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "required": true
+          },
+          "company": {
+            "type": "string",
+            "required": true
+          },
+          "firstname": {
+            "type": "string",
+          },
+          "lastname": {
+            "type": "string",
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+              },
+              "town": {
+                "type": "string",
+              },
+              "postcode": {
+                "type": "string",
+              },
+              "phone": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "address1": {
+                "type": "string"
+              },
+              "address2": {
+                "type": "string"
+              },
+            }
+          }
+        },
+        "xml": {
+          "name": "AccountDTO"
+        }
+      },
+      "NewUserDTO": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "lastname",
+          "siteID"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "required": true
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "required": true
+          },
+          "company": {
+            "type": "string",
+            "required": true
+          },
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string",
+            "required": true
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+              },
+              "town": {
+                "type": "string",
+              },
+              "postcode": {
+                "type": "string",
+              },
+              "phone": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "address1": {
+                "type": "string"
+              },
+              "address2": {
+                "type": "string"
+              },
+            }
+          }
+        },
+        "xml": {
+          "name": "PlatLoginDTO"
+        }
+      },
       "ProductDTO": {
         "type": "object",
         "required": [
@@ -55,41 +203,28 @@ export default {
           "categoryID"
         ],
         "properties": {
-          "name": {
+          "productName": {
             "type": "string"
           },
-          "pack": {
-            "type": "string"
+          "productDetails": {
+            "type": "object",
+            "properties": {
+              "price": {
+                "type": "number"
+              },
+              "discount": {
+                "type": "number"
+              },
+              "imgURL": {
+                "type": "string"
+              },
+              "iconURL": {
+                "type": "string"
+              }
+            },
           },
-          "sort": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "sizes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "price": {
-            "type": "number"
-          },
-          "discount": {
-            "type": "number"
-          },
-          "imgURL": {
-            "type": "string"
-          },
-          "iconURL": {
-            "type": "string"
-          },
-          "details": {
-            "type": "string"
-          },
-          "quantity": {
-            "type": "number"
+          "lastEditDate": {
+            "type": "date"
           }
         },
         "xml": {
@@ -111,67 +246,37 @@ export default {
             "type": "number",
             "default": 15
           },
-          "sort": {
-            "type": "string",
-            "default": "name_property"
-          },
           "results": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "_id": {
-                  "type": "string",
-                  "uniqueItems": true
-                },
-                "categoryID": {
+                "productName": {
                   "type": "string"
                 },
-                "name": {
-                  "type": "string"
+                "productDetails": {
+                  "type": "object",
+                  "properties": {
+                    "price": {
+                      "type": "number"
+                    },
+                    "discount": {
+                      "type": "number"
+                    },
+                    "imgURL": {
+                      "type": "string"
+                    },
+                    "iconURL": {
+                      "type": "string"
+                    }
+                  },
                 },
-                "pack": {
-                  "type": "string"
-                },
-                "sort": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "sizes": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "price": {
-                  "type": "number"
-                },
-                "discount": {
-                  "type": "number"
-                },
-                "imgURL": {
-                  "type": "string"
-                },
-                "iconURL": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "string"
-                },
-                "quantity": {
-                  "type": "number"
+                "productName": {
+                  "type": "date"
                 }
-              }
+              },
             }
           },
-          "companies": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
         }
       },
       "EmployeeDTO": {
@@ -249,10 +354,6 @@ export default {
           "perPage": {
             "type": "number",
             "default": 15
-          },
-          "sort": {
-            "type": "string",
-            "default": "name_property"
           },
           "results": {
             "type": "object",
@@ -378,7 +479,7 @@ export default {
           "Products"
         ],
         "summary": "Add new product",
-        "description": "Employes or higher rank can add a new product.",
+        "description": "Employees or higher rank can add a new product. API allows adding an extra details(properties) to the DB. All extra details have to go to 'productDetails' object, the rest of the details will be ignored.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -400,16 +501,16 @@ export default {
         },
         "responses": {
           "200": {
-            "description": "New product wwas inserted",
+            "description": "New product was inserted",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductDTO"
+                  "type": "string"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductDTO"
+                  "type": "string"
                 }
               },
               "text/plain": {
@@ -537,7 +638,7 @@ export default {
           "Products"
         ],
         "summary": "Product details update by productID",
-        "description": "",
+        "description": "All extra details have to go to 'productDetails' object, the rest of the data will be ignored.",
         "parameters": [
           {
             "name": "id",
@@ -674,55 +775,44 @@ export default {
         }
       }
     },
-    "/customers": {
-      "get": {
+    // Client WebSites - Auth
+    "/auth/sign-in": {
+      "post": {
         "tags": [
-          "Customers"
+          "Auth"
         ],
-        "summary": "Pagination all customers",
-        "description": "Data can be filtered by customers Name and/or email substrings. Data can be sort by each property with descending or ascending data direction",
-        "parameters": [
-          {
-            "name": "currentPage",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
-          },
-          {
-            "name": "perPage",
-            "in": "query",
-            "description": "Records per page",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "default": 15
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Accept property_name + direction (asc / desc)",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "default": "created asc"
+        "summary": "Platform Login Form",
+        "description": "Login form which authorise the user by provided email, password and sideId by generating a site token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDTO"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EmployeeListDTO"
+                  "$ref": "#/components/schemas/ReceivingCreds"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/EmployeeListDTO"
+                  "$ref": "#/components/schemas/ReceivingCreds"
                 }
               },
               "text/plain": {
@@ -740,6 +830,116 @@ export default {
           },
           "404": {
             "description": "404 Not Found"
+          }
+        }
+      }
+    },
+    "/auth/sign-up": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Platform Sign-Up form",
+        "description": "Creates a new account and send a confirmation email to the specified email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/NewCompany"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "description": "Confirmation email was send to the specified email"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Token refresh",
+        "description": "Requires active and valid token to generate new one with extended expiration time, for the next 60 minutes",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivingCreds"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivingCreds"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivingCreds"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error"
+          },
+        }
+      }
+    },
+    // Clients CRUD Requests
+    "/auth/{id}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Returns account details",
+        "responses": {
+          "200": {
+            "description": "Account details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       },
@@ -747,194 +947,24 @@ export default {
         "tags": [
           "Customers"
         ],
-        "summary": "Add new customers",
-        "description": "To add new customers, an user with level manager or higher have to create the new account with a temporary password. After login the new employee have to change the password",
+        "summary": "Update user details",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
+                "$ref": "#/components/schemas/AccountDTO"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
+                "$ref": "#/components/schemas/AccountDTO"
               }
             },
             "text/plain": {
               "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
+                "type": "string"
               }
             }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "New customers was added",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Customers"
-        ],
-        "summary": "Delete all customers",
-        "description": "Äll employes connected to selected website will be removed",
-        "responses": {
-          "200": {
-            "description": "X customers were removed from the database 'successfully'",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/customers/{id}": {
-      "get": {
-        "tags": [
-          "Customers"
-        ],
-        "summary": "Take customer by ID",
-        "description": "Returns data for selected customer",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The customer ID",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "404 Not Found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Customers"
-        ],
-        "summary": "Update customer details by ID",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The customer ID",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
-              }
-            },
-            "text/plain": {
-              "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "404 Not Found"
           }
         }
       },
@@ -942,59 +972,24 @@ export default {
         "tags": [
           "Customers"
         ],
-        "summary": "To update partial customer data",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The customer ID",
-            "type": "string",
-            "required": true
-          }
-        ],
+        "summary": "Updates partly the user details",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
+                "$ref": "#/components/schemas/AccountDTO"
               }
             },
             "application/xml": {
               "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
+                "$ref": "#/components/schemas/AccountDTO"
               }
             },
             "text/plain": {
               "schema": {
-                "$ref": "#/components/schemas/EmployeeDTO"
+                "type": "string"
               }
             }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDTO"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "404 Not Found"
           }
         }
       },
@@ -1002,23 +997,25 @@ export default {
         "tags": [
           "Customers"
         ],
-        "summary": "Delete selected customer",
-        "description": "By providing the customer id, all records connected to it will be removed from the database",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The customer ID",
-            "type": "string",
-            "required": true
-          }
-        ],
+        "summary": "Delete Customer Account",
+        "description": "Permanently deleting the customer account",
         "responses": {
           "200": {
-            "description": "Employee_data was deleted successfully"
+            "description": "Account was deleted successfully."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "System error and error details will be provide."
           }
         }
       }
-    }
+    },
+
+
   }
 }
