@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from "./config/connectToDB.js";
+import path from "path";
 
 import fileUpload from "express-fileupload";
 
@@ -24,6 +25,7 @@ import { logsRoute } from "./api/routers/logs.js";
 import { productRoute } from "./api/routers/products.js";
 import { ordersRoute } from "./api/routers/orders.js";
 
+const __dirname = path.resolve();
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -64,6 +66,9 @@ app.listen(
     socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
   });
 
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/ui/index.js'));
+});
 
 
 /**
