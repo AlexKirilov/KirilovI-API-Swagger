@@ -1,6 +1,7 @@
 
 'use strict';
 import Auth from '../../models/Auth.js';
+import { setLogMSG } from "../../func.js";
 
 function authAuthByID() {
 
@@ -10,11 +11,15 @@ function authAuthByID() {
       if (auth.active) {
         return res.status(200).send({ message: 'Account is already active' });
       }
+
       auth.active = true;
       await auth.save();
+      setLogMSG(req.siteID, req._id, 'information', 'verify', 'post', `User with ID: ${req._id} was approved and the account is now active`);
       return res.status(200).send({ message: 'Email was confirmed and user is now active' });
+
     } catch (err) {
-      if (err) return res.send(err);
+      setLogMSG(req.siteID, null, 'error', 'verify', 'post', err);
+      return res.send(err);
     }
   }
 

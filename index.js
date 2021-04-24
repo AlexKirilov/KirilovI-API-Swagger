@@ -20,7 +20,9 @@ import { fileRouter } from "./api/routers/fileImpExp.js";
 import { employeeRoute } from "./api/routers/employees.js";
 
 // Remaining
+import { logsRoute } from "./api/routers/logs.js";
 import { productRoute } from "./api/routers/products.js";
+import { ordersRoute } from "./api/routers/orders.js";
 
 const app = express();
 app.use(cors());
@@ -48,8 +50,9 @@ app.use('/employees', employeeRoute());
 
 // Client Side requests
 app.use('/products', productRoute());
+app.use('/orders', ordersRoute());
 
-
+app.use('/logs', logsRoute());
 // app.get('/', (req, res) => res.send('Welcome to my API'));
 
 app.listen(

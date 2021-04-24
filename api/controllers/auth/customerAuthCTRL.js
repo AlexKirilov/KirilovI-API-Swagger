@@ -30,11 +30,12 @@ export async function signIn(req, res) {
         _id: s._id
       }
     }).catch(err => {
-      // setLogMSG("WebSite", 'post', 'error', err, 'customer');
+      setLogMSG(req.siteID, null, 'error', 'customer', 'post', err);
       return res.status(500).json({ error: err });
     });
 
     if (!siteData) {
+      setLogMSG(req.siteID, null, 'error', 'customer', 'post', 'No valid entry found for provided Site ID');
       return res.status(404).json({ message: 'No valid entry found for provided Site ID' });
     }
 
@@ -56,7 +57,10 @@ export async function signIn(req, res) {
           // Updating the last user login date-time
           userData.lastLogin = new Date();
           userData.updateOne(userData, (err, newUser) => {
-            if (err) return res.status(500).send(variables.errorMsg.update);
+            if (err) {
+              setLogMSG(req.siteID, null, 'error', 'customer', 'post', err);
+              return res.status(500).send(variables.errorMsg.update);
+            }
           });
           // setLogMSG("WebSite", 'post', 'info', err, 'customer');
           createToken(res, userData, siteData);
@@ -104,6 +108,7 @@ export async function signUp(req, res) {
       });
 
     } catch (err) {
+      setLogMSG(req.siteID, null, 'error', 'customer', 'post', err);
       return res.status(500).send(err);
     }
 

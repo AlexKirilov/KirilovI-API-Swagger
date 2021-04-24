@@ -42,6 +42,14 @@ export default {
     {
       "name": "File",
       "description": "Import / Export data"
+    },
+    {
+      "name": "Platform Orders",
+      "description": "CRUD operations"
+    },
+    {
+      "name": "Logs",
+      "description": "Storing all FrontEnd and BackEnd messages"
     }
   ],
   "servers": [
@@ -541,6 +549,343 @@ export default {
             },
             "xml": {
               "name": "EmployeeDTO"
+            }
+          }
+        }
+      },
+      "OrdersDTO": {
+        "type": "object",
+        "required": [
+          "flag",
+          "asGift",
+          "clientNotes",
+          "country",
+          "town",
+          "postcode",
+          "address",
+          "address1",
+          "address2",
+          "phone"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "handlerID": {
+            "type": "string"
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "canceledDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "approvedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sendForDeliveryDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deliveredDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "flag": {
+            "type": "string"
+          },
+          "clientNotes": {
+            "type": "string"
+          },
+          "asGift": {
+            "type": "boolean"
+          },
+          "trackingNumber": {
+            "type": "string"
+          },
+          "deliveryCompanyName": {
+            "type": "number"
+          },
+          "address": {
+            "country": {
+              "type": "string"
+            },
+            "town": {
+              "type": "string"
+            },
+            "postcode": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "address1": {
+              "type": "string"
+            },
+            "address2": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            }
+          }
+        },
+        "xml": {
+          "name": "EmployeeDTO"
+        }
+      },
+      "OrdersListDTO": {
+        "type": "object",
+        "required": [
+          "siteID",
+          "categoryID"
+        ],
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "default": 1
+          },
+          "perPage": {
+            "type": "number",
+            "default": 15
+          },
+          "sort": {
+            "type": "string",
+            "default": "name_property"
+          },
+          "results": {
+            "type": "object",
+            "required": [
+              "_id",
+              "firstname",
+              "lastname",
+              "password"
+            ],
+            "properties": {
+              "_id": {
+                "type": "string",
+                "uniqueItems": true
+              },
+              "handlerID": {
+                "type": "string"
+              },
+              "createDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "orderDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "canceledDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "approvedDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "sendForDeliveryDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "deliveredDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "order": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "flag": {
+                "type": "string"
+              },
+              "clientNotes": {
+                "type": "string"
+              },
+              "asGift": {
+                "type": "boolean"
+              },
+              "trackingNumber": {
+                "type": "string"
+              },
+              "deliveryCompanyName": {
+                "type": "number"
+              },
+              "address": {
+                "country": {
+                  "type": "string"
+                },
+                "town": {
+                  "type": "string"
+                },
+                "postcode": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "address1": {
+                  "type": "string"
+                },
+                "address2": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                }
+              }
+            },
+            "xml": {
+              "name": "EmployeeDTO"
+            }
+          }
+        }
+      },
+      "GetLogDTO": {
+        "properties": {
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "perPage": {
+            "type": "number",
+            "default": 25
+          },
+          "sort": {
+            "type": "object",
+            "default": {}
+          },
+          "isUI": {
+            "type": "boolean",
+            "default": null
+          },
+          "level": {
+            "type": "string",
+            "default": null
+          },
+          "logType": {
+            "type": "string",
+            "default": null
+          },
+          "requestType": {
+            "type": "string",
+            "default": null
+          },
+          "beforeDate": {
+            "type": "string",
+            "format": "date-time",
+            "default": null
+          },
+          "afterDate": {
+            "type": "string",
+            "format": "date-time",
+            "default": null
+          }
+        }
+      },
+      "AddLogDTO": {
+        "properties": {
+          "type": "object",
+          "required": [
+            "level",
+            "logType",
+            "requestType",
+            "message"
+          ],
+          "properties": {
+            "isUI": {
+              "type": "boolean",
+              "default": null
+            },
+            "level": {
+              "type": "string",
+              "default": null
+            },
+            "logType": {
+              "type": "string",
+              "default": null
+            },
+            "requestType": {
+              "type": "string",
+              "default": null
+            },
+            "message": {
+              "type": "string",
+              "default": null
+            },
+            "beforeDate": {
+              "type": "string",
+              "format": "date-time",
+              "default": null
+            },
+            "afterDate": {
+              "type": "string",
+              "format": "date-time",
+              "default": null
+            }
+          }
+        }
+      },
+      "LogsListDTO": {
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "default": 1
+          },
+          "perPage": {
+            "type": "number",
+            "default": 15
+          },
+          "sort": {
+            "type": "string",
+            "default": "name_property"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "uniqueItems": true
+              }
+              ,
+              "isUI": {
+                "type": "boolean",
+                "default": null
+              },
+              "level": {
+                "type": "string"
+              },
+              "logType": {
+                "type": "string"
+              },
+              "requestType": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "default": "Current date and time"
+              }
             }
           }
         }
@@ -2177,6 +2522,366 @@ export default {
           }
         }
       }
-    }
+    },
+    "/orders": {
+      "get": {
+        "tags": [
+          "Platform Orders"
+        ],
+        "summary": "Pagination all Orders",
+        "description": "Data can be filtered by orders [flag (status), handlerID, customerID, trackingNumber, createDate, orderDate, canceledDate, approvedDate, sendForDeliveryDate, deliveredDate]",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersListDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersListDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Platform Orders"
+        ],
+        "summary": "Add new order",
+        "description": "To add new order ........",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdersDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdersDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdersDTO"
+              }
+            }
+          }
+        },
+      },
+      "delete": {
+        "tags": [
+          "Platform Orders"
+        ],
+        "summary": "Delete all orders",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "X orders were removed from the database 'successfully'",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "Platform Orders"
+        ],
+        "summary": "Take order by ID",
+        "description": "Returns data for selected order",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The order ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Platform Orders"
+        ],
+        "summary": "To update partial selected order data",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The order ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdersDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdersDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdersDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Platform Orders"
+        ],
+        "summary": "Delete selected order",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The order ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order_data was deleted successfully"
+          }
+        }
+      }
+    },
+    "/logs": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Pagination all Logs",
+        "description": `Data can be filtered by Page, Page Size, Sort by column`,
+        // {
+        //   // By default is null, which returns all records
+        //   // false return only Back-End records
+        //   // true return only Front-End records
+        //   "isNew": null,          // null | true | false
+        //   "level": null,          // null | information | warning | error | fatal
+        //   "logType": null,        // null | product | employee | customer | invoices 
+        //   "requestType": null,    // null | get, post, put, patch, delete
+        //   "afterDate": null,      // Return all records after the specific date and time
+        //   "beforeDate": null      // Return all records before the specific date and time
+        // }`,
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetLogDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/GetLogDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/GetLogDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsListDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsListDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Logs"
+        ],
+        "summary": "Add new log",
+        "description": "",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddLogDTO"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/AddLogDTO"
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "$ref": "#/components/schemas/AddLogDTO"
+              }
+            }
+          }
+        },
+      },
+      // "delete": {
+      //   "tags": [
+      //     "Logs"
+      //   ],
+      //   "summary": "Delete all logs",
+      //   "description": "",
+      //   "responses": {
+      //     "200": {
+      //       "description": "X logs were removed from the database 'successfully'",
+      //       "content": {
+      //         "application/json": {
+      //           "schema": {
+      //             "$ref": "#/components/schemas/LogsListDTO"
+      //           }
+      //         },
+      //         "application/xml": {
+      //           "schema": {
+      //             "$ref": "#/components/schemas/LogsListDTO"
+      //           }
+      //         },
+      //         "text/plain": {
+      //           "schema": {
+      //             "type": "string"
+      //           }
+      //         }
+      //       }
+      //     },
+      //     "401": {
+      //       "description": "Unauthorized"
+      //     },
+      //     "403": {
+      //       "description": "Forbidden"
+      //     },
+      //     "404": {
+      //       "description": "Not Found"
+      //     }
+      //   }
+      // }
+    },
   }
 }

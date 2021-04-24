@@ -1,37 +1,16 @@
-import func from '../func.js';
+import { validateToken } from '../func.js';
+import logsController from '../controllers/logsCTRL.js';
 import { Router } from 'express';
-import { check, validationResult } from "express-validator";
-import { get, add, remove } from "../controllers/logsCTRL";
 
-const customersRoute = Router();
+const router = Router();
 
-routes = () => {
+export function logsRoute() {
+  const controller = logsController();
 
-  customersRoute.use("/", func.checkAuthenticated, async (req, res, next) => {
-    check("siteID").not().isEmpty().isString();
-    check("customerID").not().isEmpty().isString();
-    // check("logType").not().isEmpty().isString(); // For next version
-    check("level").not().isEmpty().isString();
-    check("message").not().isEmpty().isString();
-    check("requestType").not().isEmpty().isString();
-    check("notifyOnReply").toBoolean();
+  router.route('/')
+    .get(validateToken, controller.get)
+    .post(validateToken, controller.post)
+    .delete(validateToken, controller.remove);
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    } else if (req.siteID) {
-      return next();
-    } else {
-      return res.sendStatus(403);
-    }
-  });
-
-  customersRoute.route('/')
-    .get(get)                        // GET All Logs
-    .post(add)                      // Add a new log message
-    .delete(remove)                // Delete All messages or older than 30 days.
-
-  return customersRoute;
+  return router;
 }
-
-export default routes();

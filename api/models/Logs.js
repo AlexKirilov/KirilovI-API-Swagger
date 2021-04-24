@@ -5,14 +5,16 @@ const LogLevel = 'Information' | 'Warning' | 'Error' | 'Fatal' | null;
 // const requestType = 'GET' | 'POST' | 
 
 const SiteLogsSchema = new mongoose.Schema({
-    siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site'},
-    customerID: { type: mongoose.Schema.Types.ObjectId, ref: 'Customers'},
-    logType: { type: String, default: null }, // LogType
+    siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site' },
+    customerID: { type: mongoose.Schema.Types.ObjectId, ref: 'Customers' },
+    
+    isUI: { type: Boolean, default: null },
     level: { type: String, default: null }, // LogLevel
-    message: { type: String, default: ' - Missing message - ' },
+    logType: { type: String, default: null }, // LogType
     requestType: { type: String, default: null }, // create, get, delete, update, check,
-    sysLevel: { type: String, default: null }, // - , auth, site, invoiceDetails, contactsDetails
-    logDateTime: { type: Date, default: new Date ().toISOString() },
+
+    message: { type: String, default: ' - Missing message - ' },
+    createdAt: { type: Date, expires: '90d', default: Date.now }
 });
 
 export default mongoose.model('Logs', SiteLogsSchema);

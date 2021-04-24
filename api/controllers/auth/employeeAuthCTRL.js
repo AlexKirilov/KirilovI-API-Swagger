@@ -1,14 +1,10 @@
 import Site from '../../models/Site.js';
 import Auth from '../../models/Auth.js';
-import { onCatchCreateLogMSG, createToken } from '../../func.js';
-
-function logMSG(data) {
-  new SiteLogs(data).save();
-}
+import { createToken, setLogMSG } from '../../func.js';
 
 /*
 * Auth includes only the Platform CRUD request.
-* Auth doest have connection to the client CRUD.
+* Auth doesn't have connection to the client CRUD.
 * In next version each Owner will have separated domain and login form.
 * All employees will be allowed to login into the platform from that form ONLY.
 */
@@ -31,7 +27,7 @@ function controller() {
             res.status(404).send(variables.errorMsg.notfound);
           } else {
 
-            Site.findById(auth.siteID)
+            Site.findById(req.siteID)
               .exec()
               .then(resultData => {
                 if (!resultData) {
@@ -48,35 +44,18 @@ function controller() {
                         if (err) return res.status(500).send(variables.errorMsg.update);
                       });
 
-                      logMSG({
-                        level: 'information',
-                        message: `User with ID '${auth.id}' logged in successfully`,
-                        sysOperation: 'login',
-                        sysLevel: 'auth'
-                      });
-
                       createToken(res, auth, resultData);
                     }
                   });
                 }
               })
               .catch(err => {
-                logMSG({
-                  level: 'error',
-                  message: onCatchCreateLogMSG(err),
-                  sysOperation: 'check',
-                  sysLevel: 'auth'
-                });
+                setLogMSG(req.siteID, null, 'error', 'employee', 'post', err);
                 res.status(500).json({ error: err });
               });
           }
         }).catch(err => {
-          logMSG({
-            level: 'error',
-            message: onCatchCreateLogMSG(err),
-            sysOperation: 'check',
-            sysLevel: 'auth'
-          });
+          setLogMSG(req.siteID, null, 'error', 'employee', 'post', err);
           res.status(500).json({ error: err });
         });
     }

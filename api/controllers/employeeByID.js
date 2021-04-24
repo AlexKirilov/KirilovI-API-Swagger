@@ -1,4 +1,5 @@
 import * as messages from "../var.js";
+import { setLogMSG } from "../func.js";
 import Customers from '../models/Customers.js';
 
 function controller() {
@@ -34,8 +35,14 @@ function controller() {
           }
         };
         Customers.findByIdAndUpdate(req.params.id, updateEmployee, (err, result) => {
-          if (err) return res.send(err)
-          else return res.status(200).send(updateEmployee)
+          if (err) {
+            setLogMSG(req.siteID, req.params.id, 'error', 'employee', 'put', err);
+            return res.send(err);
+          }
+          else {
+            setLogMSG(req.siteID, req.params.id, 'information', 'employee', 'put', `Employee with ID: ${req.params.id} was updated successfully`);
+            return res.status(200).send(updateEmployee)
+          }
         });
       } else {
         return res.status(409).json({
@@ -43,6 +50,7 @@ function controller() {
         });
       }
     } catch (error) {
+      setLogMSG(req.siteID, req.params.id, 'error', 'employee', 'put', err);
       return res.status(500).send(error);
     }
   }
@@ -68,7 +76,12 @@ function controller() {
       });
 
       req.employee.save((err) => {
-        if (err) return res.send(err);
+        if (err) {
+          setLogMSG(req.siteID, req.params.id, 'error', 'employee', 'patch', err);
+          return res.send(err);
+        }
+
+        setLogMSG(req.siteID, req.params.id, 'information', 'employee', 'put', `Employee with ID: ${req.params.id} was updated successfully`);
         return res.json(employee)
       });
     } else {
@@ -85,8 +98,14 @@ function controller() {
     };
 
     Customers.deleteOne(by, (err, result) => {
-      if (err) return res.status(500).send(err);
-      else return  res.status(200).send({ message:messages.remove });
+      if (err) {
+        setLogMSG(req.siteID, null, 'error', 'employee', 'delete', err);
+        return res.status(500).send(err);
+      }
+      else {
+        setLogMSG(req.siteID, req.params.id, 'information', 'employee', 'delete', `Employee with ID: ${req.params.id} was deleted successfully`);
+        return  res.status(200).send({ message:messages.remove });
+      }
     });
   }
 

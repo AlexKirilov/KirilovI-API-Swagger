@@ -1,4 +1,4 @@
-import { convertSort, checkAuthLevelAsAuth } from "../func.js";
+import { convertSort, checkAuthLevelAsAuth, setLogMSG } from "../func.js";
 import * as errorMsg from "../var.js";
 
 import Products from "../models/Products.js";
@@ -34,7 +34,7 @@ function controller() {
     Products.find(by, skipDetails)
       .sort(sort)
       .skip(skip)
-      .limit(20)
+      .limit(perPage)
       .then((products) => {
         if (!products && !products.length) {
           return res.status(404).send();
@@ -42,13 +42,6 @@ function controller() {
 
         // add customer discount to each product
         products.forEach(item => item.discount = customerDiscount);
-        // currentPage:
-        // pageCount:
-        // pageSize:
-        // rowCount:
-        // orderByColumn:
-        // firstRowOnPage:
-        // lastRowOnPage:
         
         return res.status(200).send({
           row: productSize,
@@ -63,6 +56,7 @@ function controller() {
         });
       })
       .catch((err) => {
+        setLogMSG(req.siteID, null, 'error', 'products', 'get', err);
         return res.status(500).send(err);
       });
   }
@@ -73,10 +67,14 @@ function controller() {
         req.body.siteID = req.siteID;
         const product = new Products(req.body, skipDetails);
         product.save((err) => {
-          if (err) return res.send(err);
+          if (err) {
+            setLogMSG(req.siteID, null, 'error', 'products', 'post', err);
+            return res.send(err);
+          }
           return res.status(200).json(product);
         });
       } catch (err) {
+        setLogMSG(req.siteID, null, 'error', 'products', 'post', err);
         return res.send(err);
       }
     }
@@ -99,12 +97,16 @@ function controller() {
         }
 
         Products.deleteMany(by, (err, result) => {
-          if (err) return res.status(500).send(err);
+          if (err) {
+            setLogMSG(req.siteID, null, 'error', 'products', 'delete', err);
+            return res.status(500).send(err);
+          }
           return res.status(200).json({
             message: `${result.deletedCount} product(s) were deleted`
           });
         });
       } catch (err) {
+        setLogMSG(req.siteID, null, 'error', 'products', 'delete', err);
         return res.status(404).json(errorMsg.notfound);
       }
     } else {

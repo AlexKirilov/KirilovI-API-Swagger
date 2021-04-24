@@ -421,7 +421,102 @@ export default {
             }
           }
         }
-      }
+      },
+      "OrdersDTO": {
+        "type": "object",
+        "required": [
+          "flag",
+          "asGift",
+          "clientNotes",
+          "country",
+          "town",
+          "postcode",
+          "address",
+          "address1",
+          "address2",
+          "phone"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "handlerID": {
+            "type": "string"
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "canceledDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "approvedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sendForDeliveryDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deliveredDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "flag": {
+            "type": "string"
+          },
+          "clientNotes": {
+            "type": "string"
+          },
+          "asGift": {
+            "type": "boolean"
+          },
+          "trackingNumber": {
+            "type": "string"
+          },
+          "deliveryCompanyName": {
+            "type": "number"
+          },
+          "address": {
+            "country": {
+              "type": "string"
+            },
+            "town": {
+              "type": "string"
+            },
+            "postcode": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "address1": {
+              "type": "string"
+            },
+            "address2": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            }
+          }
+        },
+        "xml": {
+          "name": "EmployeeDTO"
+        }
+      },
     }
   },
   "security": [
@@ -1016,6 +1111,49 @@ export default {
       }
     },
 
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "Platform Orders"
+        ],
+        "summary": "Take order by ID",
+        "description": "Returns data for selected order",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The order ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdersDTO"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 Not Found"
+          }
+        }
+      },
+    }
 
   }
 }

@@ -234,6 +234,7 @@ export function verifyLvlOfAuth(userLevel, minLvl) {
 }
 
 export function getSiteID(req, res, next) {
+
   if (!req.headers.siteid)
     return res.status(401).send(variables.errorMsg.unauthorized);
 
@@ -254,29 +255,34 @@ export function signInBase64Encoding(req, res, next) {
   if (!req.headers.siteid || (!req.params && !req.params.base))
     return res.status(401).send(variables.errorMsg.unauthorized);
 
-    const buff = new Buffer.from(req.params.base, 'base64');
-    const params = JSON.parse(buff.toString('ascii'));
+  const buff = new Buffer.from(req.params.base, 'base64');
+  const params = JSON.parse(buff.toString('ascii'));
 
-    req.email = params.email;
-    req.company = params.company;
-    req.password = params.password;
-    req.siteID = req.headers.siteid;
+  req.email = params.email;
+  req.company = params.company;
+  req.password = params.password;
+  req.siteID = req.headers.siteid;
 
-    next()
+  next()
 }
 
 /*
+* @param {'Information' | 'Warning' | 'Error' | 'Fatal' } level
 * @param {'Product' | 'Customer' | 'Invoices' | any } logType
-*
+* @param {'post' | 'get' | 'delete' | 'put' | 'patch' } requestType
 *
 */
-export function setLogMSG(logType, requestType, level, err, sysLevel = 'platform') {
+export function setLogMSG(siteID, customerID, level, logType, requestType, err) {
+  const date = new Date();
   new Logs({
+    expireAt: date.setMonth(date.getMonth() + 1),
+    siteID,
+    customerID,
+    isUI: false,
     logType,
     level,
     message: onCatchCreateLogMSG(err),
-    requestType,
-    sysLevel
+    requestType
   }).save();
 }
 

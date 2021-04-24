@@ -2,7 +2,6 @@
 import Site from '../../models/Site.js';
 import Auth from '../../models/Auth.js';
 import { compare } from 'bcrypt-nodejs';
-// import nodemailer from "nodemailer";
 import * as variables from "../../var.js";
 import { check, validationResult, body } from "express-validator";
 import {
@@ -11,7 +10,13 @@ import {
   generatePublicKey, sendMail, setLogMSG
 } from '../../func.js';
 
+/**
+ * That Controller will be used ONLY for the Platform purposes
+ * The control details will not be include into the clientSwagger
+ */
+
 // TODO: Platform Login/Sign - SiteID to be removed from the requirements ---- It`s the PLAT UI
+
 export async function signIn(req, res) {
   check('email').isString().isEmail().normalizeEmail();
   check('password').isString().trim().isLength({ min: 5 }).escape();
@@ -32,13 +37,15 @@ export async function signIn(req, res) {
         _id: s._id
       }
     }).catch(err => {
-      setLogMSG("Platform", 'post', 'error', err, 'platform');
+      setLogMSG(req.siteID, null, 'error', 'site', 'post', err);
       return res.status(500).json({ error: err });
     });
 
     if (!siteData) {
+      setLogMSG(req.siteID, null, 'warning', 'signIn', 'post', 'No valid entry found for provided Site ID');
       return res.status(404).json({ message: 'No valid entry found for provided Site ID' });
     } else if (req.company.toLowerCase() !==  siteData.company.toLowerCase()) {
+      setLogMSG(req.siteID, null, 'warning', 'signIn', 'post', `Company name doesn't match with our records`);
       return res.status(403).json({ message: `Company name doesn't match with our records` });
     }
 
@@ -60,7 +67,7 @@ export async function signIn(req, res) {
           userData.updateOne(userData, (err, newUser) => {
             if (err) return res.status(500).send(variables.errorMsg.update);
           });
-          setLogMSG("Platform", 'post', 'info', err, 'platform');
+          setLogMSG(req.siteID, siteData._id, 'information', 'signIn', 'post', `User with ID: ${siteData._id} logged into the platform`);
           createToken(res, userData, siteData);
         }
       });
@@ -108,6 +115,7 @@ export async function signUp(req, res) {
       });
 
     } catch (err) {
+      setLogMSG(null, null, 'fatal', 'signUp', 'post', err);
       return res.status(500).send(err);
     }
 

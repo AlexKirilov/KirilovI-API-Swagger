@@ -1,4 +1,4 @@
-import { checkAuthLevelAsAuth, checkObjectProperties } from "../func.js";
+import { checkAuthLevelAsAuth, checkObjectProperties, setLogMSG } from "../func.js";
 import * as messages from "../var.js";
 import Products from "../models/Products.js";
 
@@ -25,10 +25,14 @@ function controller() {
       product.lastEditDate = new Date().toISOString();
 
       Products.findByIdAndUpdate(req.params.id, product, (err, result) => {
-        if (err) return res.send(err)
+        if (err) {
+          setLogMSG(req.siteID, null, 'error', 'products', 'put', err);
+          return res.send(err);
+        }
         else return res.status(200).send(product)
       });
     } else {
+      setLogMSG(req.siteID, null, 'error', 'products', 'put', err);
       return res.status(403).send()
     }
   }
@@ -47,7 +51,10 @@ function controller() {
       });
 
       req.product.save((err) => {
-        if (err) return res.send(err);
+        if (err) {
+          setLogMSG(req.siteID, null, 'error', 'products', 'patch', err);
+          return res.send(err);
+        }
         return res.json(product)
       });
     }
@@ -61,25 +68,12 @@ function controller() {
     };
 
     Products.deleteOne(by, (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        setLogMSG(req.siteID, null, 'error', 'products', 'delete', err);
+        return res.status(500).send(err);
+      }
       else return res.status(200).send(messages.remove);
     });
-
-    // if (func.checkAuthLevelAsAuth(req.siteID, req.authLevel)) {
-    //   Products.removeById(req.params.id).then(() => {
-    //     // logMSG({
-    //     //   siteID: req.siteID,
-    //     //   customerID: req.userId,
-    //     //   level: "information",
-    //     //   message: `Product was removed successfully.`,
-    //     //   sysOperation: "delete",
-    //     //   sysLevel: "product"
-    //     // });
-    //     res.status(200).send(variables.messages.remove);
-    //   });
-    // } else {
-    //   return res.status(401).send(variables.errorMsg.unauthorized);
-    // }
   }
 
   return { put, patch, remove }

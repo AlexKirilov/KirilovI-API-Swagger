@@ -1,6 +1,6 @@
 
-import { convertSort } from "../func.js";
 import Customers from '../models/Customers.js';
+import { convertSort, setLogMSG } from "../func.js";
 import { check, validationResult, body } from "express-validator";
 const skipDetails = '-__v -GDPR -siteID -password -company';
 
@@ -34,7 +34,7 @@ function controller() {
       .find(by, skipDetails)
       .sort(sort)
       .skip(skip)
-      .limit(20)
+      .limit(perPage)
       .exec();
 
     if (!customerList && !customerList.length) {
@@ -47,7 +47,7 @@ function controller() {
       page: page,
       perPage: perPage,
       displayedRows: customerList.length,
-      firstrowOnPage: page <= 1 ? 1 : (page - 1) * perPage + 1,
+      firstRowOnPage: page <= 1 ? 1 : (page - 1) * perPage + 1,
       lastRowOnPage: page * perPage - 1 > customerSize ? customerSize : page * perPage - 1,
       sortBy: sort,
       results: customerList
@@ -95,26 +95,12 @@ function controller() {
 
         const result = new Customers(newEmployee)
         result.save().then(result => {
-          // logMSG({
-          //   siteID: req.siteID,
-          //   customerID: result._id,
-          //   level: 'information',
-          //   message: `New Customer was created with ID '${result._id}' for web site ID '${req.siteID}'`,
-          //   sysOperation: 'create',
-          //   sysLevel: 'customer'
-          // });
+          setLogMSG(req.siteID, result._id || null, 'error', 'customer', 'post', err);
           return res.status(200).json({
             message: "Employee was created"
           })
         }).catch((err) => {
-          // logMSG({
-          //   siteID: req.siteID,
-          //   customerID: result._id,
-          //   level: 'error',
-          //   message: `New Customer was created with ID '${result._id}' for web site ID '${req.siteID}'`,
-          //   sysOperation: 'create',
-          //   sysLevel: 'customer'
-          // });
+          setLogMSG(req.siteID, null, 'error', 'customer', 'post', err);
           return res.status(500).send(err);
         });
       } else {
@@ -136,7 +122,10 @@ function controller() {
     }
 
     await Customers.deleteMany(by, (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        setLogMSG(req.siteID, null, 'error', 'customer', 'delete', err);
+        return res.status(500).send(err);
+      }
       return res.status(200).json({
         message: `${result.deletedCount} employees were deleted`
       });

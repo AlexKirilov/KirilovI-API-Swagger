@@ -1,5 +1,5 @@
 
-import { convertSort } from "../func.js";
+import { convertSort, setLogMSG } from "../func.js";
 import Customers from '../models/Customers.js';
 import { check, validationResult, body } from "express-validator";
 
@@ -33,7 +33,7 @@ function controller() {
     const employeeList = await Customers.find(by, skipDetails)
       .sort(sort)
       .skip(skip)
-      .limit(20)
+      .limit(perPage)
       .exec();
 
     if (!employeeList && !employeeList.length) {
@@ -46,7 +46,7 @@ function controller() {
       page: page,
       perPage: perPage,
       displayedRows: employeeList.length,
-      firstrowOnPage: page <= 1 ? 1 : (page - 1) * perPage + 1,
+      firstRowOnPage: page <= 1 ? 1 : (page - 1) * perPage + 1,
       lastRowOnPage: page * perPage - 1 > employeeSize ? employeeSize : page * perPage - 1,
       sortBy: sort,
       results: employeeList
@@ -96,27 +96,13 @@ function controller() {
 
         const result = new Customers(newEmployee)
         result.save().then(result => {
-          // logMSG({
-          //   siteID: req.siteID,
-          //   customerID: result._id,
-          //   level: 'information',
-          //   message: `New Customer was created with ID '${result._id}' for web site ID '${req.siteID}'`,
-          //   sysOperation: 'create',
-          //   sysLevel: 'customer'
-          // });
+          setLogMSG(req.siteID, result._id, 'information', 'employee', 'post', `Employee with ID: ${result._id} was created successfully`);
           return res.status(200).json({
             message: "Employee was created"
-          })
+          });
           // TODO: Send confirmation email to the user and the token must exp after a day
         }).catch((err) => {
-          // logMSG({
-          //   siteID: req.siteID,
-          //   customerID: result._id,
-          //   level: 'error',
-          //   message: `New Customer was created with ID '${result._id}' for web site ID '${req.siteID}'`,
-          //   sysOperation: 'create',
-          //   sysLevel: 'customer'
-          // });
+          setLogMSG(req.siteID, null, 'error', 'employee', 'post', err);
           return res.status(500).send(err);
         });
       } else {
@@ -137,7 +123,12 @@ function controller() {
     }
 
     Customers.deleteMany(by, (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        setLogMSG(req.siteID, null, 'error', 'employee', 'delete', err);
+        return res.status(500).send(err);
+      }
+
+      setLogMSG(req.siteID, null, 'information', 'employee', 'delete', `${result.deletedCount} employee(s) were delete successfully`);
       return res.status(200).json({
         message: `${result.deletedCount} employees were deleted`
       });

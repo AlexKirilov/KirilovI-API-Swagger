@@ -1,5 +1,6 @@
 import * as messages from "../var.js";
 import Customers from '../models/Customers.js';
+import { setLogMSG } from "../func.js";
 
 function controller() {
 
@@ -41,8 +42,13 @@ function controller() {
         updateCustomer.personalDiscount = data.personalDiscount;
 
         Customers.findByIdAndUpdate(req.params.id, updateCustomer, (err, result) => {
-          if (err) return res.send(err)
-          else return res.status(200).send(updateCustomer)
+          if (err) {
+            setLogMSG(req.siteID, req.params.id, 'error', 'customer', 'put', err);
+            return res.send(err);
+          } else {
+            setLogMSG(req.siteID, req.params.id, 'information', 'customer', 'put', `Customer with ID: ${result._id} was updated successfully`);
+            return res.status(200).send(updateCustomer);
+          }
         });
       } else {
         return res.status(409).json({
@@ -50,6 +56,7 @@ function controller() {
         });
       }
     } catch (error) {
+      setLogMSG(req.siteID, req.params.id, 'error', 'customer', 'put', err);
       return res.status(500).send(error);
     }
   }
@@ -108,8 +115,13 @@ function controller() {
     };
 
     Customers.deleteOne(by, (err, result) => {
-      if (err) return res.status(500).send(err);
-      else return res.status(200).send(messages.remove);
+      if (err) {
+        setLogMSG(req.siteID, req.params.id, 'error', 'customer', 'delete', err);
+        return res.status(500).send(err);
+      } else {
+        setLogMSG(req.siteID, req.params.id, 'information', 'customer', 'delete', `Customer with ID: ${req.params.id} was deleted successfully`);
+        return res.status(200).send(messages.remove);
+      }
     });
   }
 
