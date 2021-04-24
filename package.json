@@ -26,7 +26,9 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "nodemon --exec babel-node index.js",
+    "server": "nodemon index.js --exec babel-node",
+    "heroku-postbuild": "npm install",
+    "start": "babel-node index.js",
     "test": "swagger project test",
     "dev": "nodemon --exec babel-node index.js --trace-warnings"
   },
@@ -34,25 +36,7 @@
     "ignor": [
       "node_modules/**/node_modules"
     ],
-    "delay": 2500,
-    "env": {
-      "NODE_ENV": "development",
-      "PORT": 4567,
-      "HOST": "localhost",
-      "MONGODB_URI": "mongodb+srv://studentapitest:studentapitestadmin@studentapi.xqvch.mongodb.net/studentapi?retryWrites=true&w=majority",
-      "MONGODB_USERNAME": "alexkkirilovgames2@gmail.com",
-      "MONGODB_PASS": "AxelF0x1",
-      "CONF_KEY": "SomeStupidEncKey"
-    },
-    "start": {
-      "NODE_ENV": "development",
-      "PORT": 4567,
-      "HOST": "localhost",
-      "MONGODB_URI": "mongodb+srv://studentapitest:studentapitestadmin@studentapi.xqvch.mongodb.net/studentapi?retryWrites=true&w=majority",
-      "MONGODB_USERNAME": "alexkkirilovgames2@gmail.com",
-      "MONGODB_PASS": "AxelF0x1",
-      "CONF_KEY": "SomeStupidEncKey"
-    }
+    "delay": 2500
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
