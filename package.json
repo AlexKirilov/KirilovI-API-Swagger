@@ -6,6 +6,9 @@
   "author": "ALK",
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "npm": "6.14.11"
+  },
   "dependencies": {
     "babel-preset-env": "^1.7.0",
     "bcrypt-nodejs": "0.0.3",
