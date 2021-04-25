@@ -16,7 +16,7 @@ function controller() {
     // Return all logs for specific Owner Web Site
     // TODO: SYAdmin should see all logs for all Web Sites
     const by = {
-      siteID: req.siteID
+      // siteID: req.siteID
     };
 
     const query = req.query;

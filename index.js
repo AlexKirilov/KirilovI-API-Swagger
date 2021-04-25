@@ -54,8 +54,9 @@ app.use('/employees', employeeRoute());
 app.use('/products', productRoute());
 app.use('/orders', ordersRoute());
 
-app.use('/logs', logsRoute());
+app.use('/api/logs', logsRoute());
 // app.get('/', (req, res) => res.send('Welcome to my API'));
+app.use(express.static(path.join(__dirname, './ui/build')));
 
 app.listen(
   port, host,
@@ -66,8 +67,10 @@ app.listen(
     socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
   });
 
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/ui/index.js'));
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './ui/build/index.html'));
 });
 
 

@@ -58,7 +58,7 @@ export default {
       "description": "Local API"
     },
     {
-      "url": "https://web-api-be.herokuapp.com/store",
+      "url": "https://web-api-be.herokuapp.com",
       "description": "Internal Production"
     }
   ],

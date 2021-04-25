@@ -8,7 +8,7 @@ export function logsRoute() {
   const controller = logsController();
 
   router.route('/')
-    .get(validateToken, controller.get)
+    .get(controller.get)
     .post(validateToken, controller.post)
     .delete(validateToken, controller.remove);
 
