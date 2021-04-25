@@ -253,10 +253,14 @@ export function generatePublicKey() {
 
 export function signInBase64Encoding(req, res, next) {
   if (!req.headers.siteid || (!req.params && !req.params.base))
-    return res.status(401).send(variables.errorMsg.unauthorized);
+    return res.status(401).send({ message: "Invalid credentials"});
 
   const buff = new Buffer.from(req.params.base, 'base64');
   const params = JSON.parse(buff.toString('ascii'));
+
+  if (!validateEmail(params.email)) {
+    return res.status(400).json({message: 'Invalid email format'})
+  }
 
   req.email = params.email;
   req.company = params.company;

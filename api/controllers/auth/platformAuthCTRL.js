@@ -26,9 +26,12 @@ export async function signIn(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
-  } else {  
+  } else {
     const userData = await Auth.findOne({ email: req.email })
-    .select('lastLogin siteID password levelAuth _id lastname firstname active')
+      .select('lastLogin siteID password levelAuth _id lastname firstname active');
+
+    if (!userData)
+      return res.status(404).send({ message: 'There is an issue with provided details' });
 
     const siteData = await Site.findById(userData.siteID).map(s => {
       return {
@@ -44,7 +47,7 @@ export async function signIn(req, res) {
     if (!siteData) {
       setLogMSG(req.siteID, null, 'warning', 'signIn', 'post', 'No valid entry found for provided Site ID');
       return res.status(404).json({ message: 'No valid entry found for provided Site ID' });
-    } else if (req.company.toLowerCase() !==  siteData.company.toLowerCase()) {
+    } else if (req.company.toLowerCase() !== siteData.company.toLowerCase()) {
       setLogMSG(req.siteID, null, 'warning', 'signIn', 'post', `Company name doesn't match with our records`);
       return res.status(403).json({ message: `Company name doesn't match with our records` });
     }
@@ -54,18 +57,18 @@ export async function signIn(req, res) {
       return res.status(404).send(variables.errorMsg.notfound);
     } else {
       compare(req.password, userData.password, (err, isMatch) => {
-        if (err) return res.status(500).send(err);
+        if (err) return res.status(401).send({message: "Invalid credentials"});
         if (!isMatch) {
-          return res.status(401).send(variables.errorMsg.unauthorized);
+          return res.status(401).send({message: "Invalid credentials"});
         } else {
           if (!userData.active) {
-            return res.status(402).send('Email is not confirmed yet.');
+            return res.status(402).send({message: 'Email is not confirmed yet.'});
           }
-
+          
           // Updating the last user login date-time
           userData.lastLogin = new Date();
           userData.updateOne(userData, (err, newUser) => {
-            if (err) return res.status(500).send(variables.errorMsg.update);
+            if (err) return res.status(500).send();
           });
           setLogMSG(req.siteID, siteData._id, 'information', 'signIn', 'post', `User with ID: ${siteData._id} logged into the platform`);
           createToken(res, userData, siteData);

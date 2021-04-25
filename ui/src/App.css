@@ -1,3 +1,7 @@
+
+@import "./auth/auth.css";
+@import "./components/components.css";
+
 .App {
   text-align: center;
 }

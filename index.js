@@ -28,7 +28,13 @@ import { ordersRoute } from "./api/routers/orders.js";
 const __dirname = path.resolve();
 const app = express();
 
-const whitelist = ['http://localhost:3000'​, 'http://localhost:4567'​, 'https://web-api-be.herokuapp.com'​];
+// ["http://localhost:3000", "http://localhost:4567"​, "https://web-api-be.herokuapp.com"];
+// throws an error => SyntaxError: Invalid or unexpected token
+const whitelist = [];
+whitelist.push("http://localhost:3000");
+whitelist.push("http://localhost:4567/");
+whitelist.push("https://web-api-be.herokuapp.com");
+
 const corsOptions = {
   origin: function (origin, callback) {
     console.log("** Origin of request " + origin)
@@ -52,22 +58,22 @@ connectDB();
 const port = process.env.PORT;
 const host = process.env.HOST;
 
-app.use('/api-docs', serve, (...args) => setup(swaggerDocument)(...args));
-app.use('/client-docs', serve, (...args) => setup(clientDocument)(...args));
+app.use('/api/api-docs', serve, (...args) => setup(swaggerDocument)(...args));
+app.use('/api/client-docs', serve, (...args) => setup(clientDocument)(...args));
 
 // Authorisation requests
-app.use('/auth', customerAuthRouter());
+app.use('/api/auth', customerAuthRouter());
 // app.use('/employeeAuth', employeeAuthRoute());
-app.use('/platform/auth', platformAuthRouter());
-app.use('/verify', verifyAuthRoute());
+app.use('/api/platform/auth', platformAuthRouter());
+app.use('/api/verify', verifyAuthRoute());
 
 // Platform requests ONLY
-app.use('/files', fileRouter());
-app.use('/employees', employeeRoute());
+app.use('/api/files', fileRouter());
+app.use('/api/employees', employeeRoute());
 
 // Client Side requests
-app.use('/products', productRoute());
-app.use('/orders', ordersRoute());
+app.use('/api/products', productRoute());
+app.use('/api/orders', ordersRoute());
 
 app.use('/api/logs', logsRoute());
 // app.get('/', (req, res) => res.send('Welcome to my API'));
