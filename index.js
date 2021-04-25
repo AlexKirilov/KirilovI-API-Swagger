@@ -27,7 +27,22 @@ import { ordersRoute } from "./api/routers/orders.js";
 
 const __dirname = path.resolve();
 const app = express();
-app.use(cors());
+
+const whitelist = ['http://localhost:3000'​, 'http://localhost:4567'​, 'https://web-api-be.herokuapp.com'​];
+const corsOptions = {
+  origin: function (origin, callback) {
+    console.log("** Origin of request " + origin)
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      console.log("Origin acceptable")
+      callback(null, true)
+    } else {
+      console.log("Origin rejected")
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions))
+
 app.use(express.json());
 app.use(fileUpload());
 
@@ -56,7 +71,7 @@ app.use('/orders', ordersRoute());
 
 app.use('/api/logs', logsRoute());
 // app.get('/', (req, res) => res.send('Welcome to my API'));
-app.use(express.static(path.join(__dirname, './ui/build')));
+
 
 app.listen(
   port, host,
@@ -67,11 +82,12 @@ app.listen(
     socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
   });
 
-
-
-app.get('/api/*', (req, res) => {
-  res.sendFile(path.join(__dirname, './ui/build/index.html'));
-});
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, 'ui/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'ui/build', 'index.html'));
+  });
+}
 
 
 /**
