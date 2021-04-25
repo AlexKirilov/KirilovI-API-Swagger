@@ -7,7 +7,8 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "npm": "6.14.11"
+    "npm": "6.14.11",
+    "node": "14.15.4"
   },
   "dependencies": {
     "babel-preset-env": "^1.7.0",
@@ -30,7 +31,7 @@
   "scripts": {
     "lint": "eslint .",
     "server": "nodemon index.js --exec babel-node",
-    "heroku-postbuild": "npm install && cd ui && npm install && react-scripts build",
+    "heroku-postbuild": "npm install && cd ui && npm install && npm run build",
     "start": "babel-node index.js",
     "test": "swagger project test",
     "dev": "nodemon --exec babel-node index.js --trace-warnings"
@@ -39,7 +40,16 @@
     "ignor": [
       "node_modules/**/node_modules"
     ],
-    "delay": 2500
+    "delay": 2500,
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 4567,
+      "HOST": "localhost",
+      "MONGODB_URI": "mongodb+srv://studentapitest:studentapitestadmin@studentapi.xqvch.mongodb.net/studentapi?retryWrites=true&w=majority",
+      "MONGODB_USERNAME": "alexkkirilovgames2@gmail.com",
+      "MONGODB_PASS": "AxelF0x1",
+      "CONF_KEY": "SomeStupidEncKey"
+    }
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
