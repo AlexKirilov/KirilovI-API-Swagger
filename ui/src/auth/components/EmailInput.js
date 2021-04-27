@@ -6,10 +6,10 @@ import FormControl from '@material-ui/core/FormControl';
 export const EmailInput = (props) => {
 
   return (
-    <FormControl className="email-input">
-      <InputLabel htmlFor="standard-adornment-email">Email</InputLabel>
+    <FormControl className="email-input-fields">
+      <InputLabel htmlFor="standard-adornment-email">{props.label ? props.label : "Email"}</InputLabel>
       <Input
-        id="standard-adornment-email"
+        id="email-input"
         type="email"
         value={props.email}
         onChange={props.onChange}

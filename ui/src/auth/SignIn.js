@@ -1,18 +1,19 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-import Button from '@material-ui/core/Button';
+import { Link } from "react-router-dom";
 import { EmailInput } from "./components/EmailInput";
 import { PassInput } from "./components/PassInput";
 import { signIn, readTokenData } from "./services/signInService";
 
 import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
 export const SignIn = () => {
   let history = useHistory();
-
+  
   const [userDetails, setValues] = React.useState({
     email: "",
     company: "",
@@ -83,6 +84,15 @@ export const SignIn = () => {
           Sign In
         </Button>
 
+        <div className="nav-btns-login">
+          <Link to={"/restore-pass"} className="reset-btn">
+            Forgot password
+          </Link>
+
+          <Link to={"/sign-up"} className="sign-up-link-btn">
+            Sign Up
+          </Link>
+        </div>
       </form>
     </section>
   );

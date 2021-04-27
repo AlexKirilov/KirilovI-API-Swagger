@@ -17,10 +17,10 @@ export const PassInput = (props) => {
   };
 
   return (
-    <FormControl className="password-input">
-      <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+    <FormControl className="passwords-input-fields">
+      <InputLabel htmlFor="password-input-field">{props.label ? props.label : "Password"}</InputLabel>
       <Input
-        id="standard-adornment-password"
+        id="password-input-field"
         type={values.showPassword ? 'text' : 'password'}
         value={props.password}
         onChange={props.onChange}
@@ -29,7 +29,7 @@ export const PassInput = (props) => {
             <IconButton
               aria-label="toggle password visibility"
               onClick={handleClickShowPassword}
-              onMouseDown={ (e) => e.preventDefault()}
+              onMouseDown={(e) => e.preventDefault()}
             >
               {values.showPassword ? <Visibility /> : <VisibilityOff />}
             </IconButton>

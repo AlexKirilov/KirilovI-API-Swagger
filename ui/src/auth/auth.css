@@ -18,10 +18,10 @@
   align-items    : center;
 }
 
-.full-page .in-middle .email-input,
-.full-page .in-middle .password-input,
+.full-page .in-middle .email-input-fields,
+.full-page .in-middle .passwords-input-fields,
 .full-page .in-middle .company-input {
-  width: 100%;
+  width        : 100%;
   margin-bottom: 10px;
 }
 
@@ -36,4 +36,42 @@
   margin-top : 10px;
   font-size  : 11px;
   font-weight: bold;
+}
+
+.nav-btns-login {
+  width         : 100%;
+  height        : 100%;
+  flex-direction: row;
+  box-sizing    : border-box;
+  display       : flex;
+  place-content : center space-between;
+  align-items   : center;
+  margin-top    : 10px;
+}
+
+.nav-btns-login a {
+  text-decoration  : none;
+  /* text-transform: uppercase; */
+}
+
+/*
+* Registration components
+*
+*/
+
+.regForm {
+  display        : flex;
+  width          : 20%;
+  min-width      : 200px;
+  margin         : 0 auto;
+  flex-direction : column;
+  justify-content: center;
+  align-items    : center;
+}
+
+.regForm .regFields,
+.regForm .email-input-fields,
+.regForm .passwords-input-fields {
+  width        : 100%;
+  margin-bottom: 40px;
 }
