@@ -2,7 +2,6 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 import { EmailInput } from "./components/EmailInput";
-import { signIn, readTokenData } from "./services/signInService";
 
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';

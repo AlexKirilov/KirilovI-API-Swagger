@@ -29,8 +29,9 @@ export function platformAuthRouter() {
   router.use("/sign-in/:base", signInBase64Encoding, async (req, res, next) => {
     if (req.email && req.password && req.company)
       next();
-    else
-      return res.status(401).send(variables.errorMsg.unauthorized);
+    else {
+      return res.status(401).send({message: "Invalid credentials"})
+    }
   });
 
   router.route('/sign-in/:base').post(signIn);

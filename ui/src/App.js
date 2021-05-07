@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import { checkSession } from "./services/CookieService"
 
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
@@ -10,8 +10,10 @@ import { PassRestore } from './auth/PassRestore';
 
 // Main Components
 import { Header } from "./components/Header";
+import { HeaderHome } from "./components/HeaderHome";
 
 // Main Pages
+import { HomePage } from "./pages/home/Home";
 import { DashboardPage } from "./pages/dashboard/Dashboard";
 import { EmployeesPage } from "./pages/employees/Employees";
 
@@ -34,12 +36,19 @@ function App() {
       )
     } else { // If there is no session display Auth pages
       return (
-        <Switch>
-          <Redirect from="/" exact to="/sign-in/" />
-          <Route path="/sign-in" exact component={SignIn} />
-          <Route path="/sign-up" component={SignUp} />
-          <Route path="/restore-pass" component={PassRestore} />
-        </Switch>
+        <section>
+          {/* <HeaderHome></HeaderHome>
+          <section  style="margin-top: 64px;"></section> */}
+          <Switch>
+            {/* <Redirect from="/" exact to="/home/" /> */}
+            <Redirect from="/" exact to="/sign-in/" />
+            {/* <Route path="/home" exact component={HomePage} /> */}
+            <Route path="/sign-in" exact component={SignIn} />
+            <Route path="/sign-up" component={SignUp} />
+            <Route path="/restore-pass" component={PassRestore} />
+          </Switch>
+          {/* <HomePage></HomePage> */}
+        </section>
       )
     }
   }

@@ -1,0 +1,64 @@
+$color           : radial-gradient(ellipse farthest-corner at center bottom, #69d2fb 0%, #20438E 100%) center bottom / 100% fixed;
+$black-bg-light  : rgba(0, 0, 0, 0.5);
+$light-box-shadow: rgba(255, 255, 255, 0.5);
+
+// ::-webkit-scrollbar the scrollbar.
+// ::-webkit-scrollbar-button the buttons on the scrollbar (arrows pointing upwards and downwards).
+// ::-webkit-scrollbar-thumb the draggable scrolling handle.
+// ::-webkit-scrollbar-track the track (progress bar) of the scrollbar.
+// ::-webkit-scrollbar-track-piece the track (progress bar) NOT covered by the handle.
+// ::-webkit-scrollbar-corner the bottom corner of the scrollbar, where both horizontal and vertical scrollbars meet.
+// ::-webkit-resizer the draggable resizing handle that appears at the bottom corner of some elements.
+
+html {
+  // background: $color;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width             : 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius     : 3px;
+    background-color  : $black-bg-light;
+    box-shadow        : 0 0 1px $light-box-shadow;
+    -webkit-box-shadow: 0 0 1px $light-box-shadow;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+.scroll,
+#outlined-multiline-static {
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width             : 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius     : 3px;
+    background-color  : $black-bg-light;
+    box-shadow        : 0 0 1px $light-box-shadow;
+    -webkit-box-shadow: 0 0 1px $light-box-shadow;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing : antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

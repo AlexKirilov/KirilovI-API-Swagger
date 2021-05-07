@@ -114,32 +114,111 @@ function getSteps() {
   ];
 }
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <RegistrationStepInfo></RegistrationStepInfo>;
-    case 1:
-      return <RegistrationStep1></RegistrationStep1>;
-    case 2:
-      return <RegistrationStep2></RegistrationStep2>;
-    case 3:
-      return <RegistrationStep3></RegistrationStep3>;
-    case 4:
-      return <RegistrationStep4></RegistrationStep4>;
-    case 5:
-      return <RegistrationStep5></RegistrationStep5>;
-    default:
-      return 'Unknown step';
-  }
-}
-
 export const SignUp = () => {
-  const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(1);
   const steps = getSteps();
+  const classes = useStyles();
+  const [activeStep, setActiveStep] = React.useState(5);
+  const [formDetails, setFormDetails] = React.useState({
+    email: "",
+    password: "",
+    username: "",
+    lastName: "",
+    firstName: "",
+    companyName: "",
+    webSiteType: "none",
+    isEmailValid: false,
+    isPasswordValid: false,
+    agreementChecked: false
+  });
+
+  const handleFormUpdate = (e) => {
+    console.log([e.target.name], e.target.value)
+    setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
+  }
+
+  const handleFormUpdateCheckB = (e) => {
+    setFormDetails({ ...formDetails, [e.target.name]: e.target.checked });
+  }
+
+  const handlerPassValidationChange = (e) => {
+    console.log('isPasswordValid', e)
+    setFormDetails({ ...formDetails, isPasswordValid: e });
+  }
+  
+  const handlerEmailValidation = (e) => {
+    setFormDetails({ ...formDetails, isEmailValid: e });
+  }
+
+  const createAccount = () => {
+    console.log('Create account => ', formDetails);
+  }
+
+  const checkIfNextEnabled = (step = activeStep) => {
+    console.log('Ac Step => ', step)
+    if (step === 1)
+      return !(formDetails.company !== '' && formDetails.webSiteType !== "none")
+    else if (step === 2)
+      return !(formDetails.email !== '' && formDetails.isEmailValid)
+    else if (step === 3)
+      return !(formDetails.password !== '' && formDetails.isPasswordValid)
+    else if (step === 4)
+      return !(formDetails.username !== '' || formDetails.firstName !== "" && formDetails.lastName !== "")
+      else if (step === 5)
+      return !(formDetails.agreementChecked)
+    return false;
+  }
+
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return <RegistrationStepInfo></RegistrationStepInfo>;
+      case 1:
+        return <RegistrationStep1
+          company={formDetails.company}
+          companyType={formDetails.webSiteType}
+          handleCompanyChange={handleFormUpdate}
+          handleCompanyTypeChange={handleFormUpdate}
+        >
+        </RegistrationStep1>;
+      case 2:
+        return <RegistrationStep2
+          email={formDetails.email}
+          isEmailValid={formDetails.isEmailValid}
+          emailHandler={handleFormUpdate}
+          onEmailValidChange={handlerEmailValidation}
+        >
+        </RegistrationStep2>;
+      case 3:
+        return <RegistrationStep3
+          value={formDetails.password}
+          onChange={handleFormUpdate}
+          onPassValidChange={handlerPassValidationChange}
+        >
+        </RegistrationStep3>;
+      case 4:
+        return <RegistrationStep4
+          username={formDetails.username}
+          firstName={formDetails.firstName}
+          lastName={formDetails.lastname}
+          onChange={handleFormUpdate}
+        >
+        </RegistrationStep4>;
+      case 5:
+        return <RegistrationStep5
+          checked={formDetails.agreementChecked}
+          onChange={handleFormUpdateCheckB}
+        >
+        </RegistrationStep5>;
+      default:
+        return 'Unknown step';
+    }
+  }
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep === steps.length - 1) {
+      createAccount();
+    }
   };
 
   const handleBack = () => {
@@ -163,7 +242,7 @@ export const SignUp = () => {
 
         {activeStep === steps.length ? (
           <div>
-            <Typography className={classes.instructions}>
+            <Typography className={classes.instructions} component={'div'} variant={'body2'}>
               <FinalStepAccCreation></FinalStepAccCreation>
             </Typography>
             <Button onClick={handleReset} className={classes.button}>
@@ -172,8 +251,7 @@ export const SignUp = () => {
           </div>
         ) : (
           <div>
-            <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-            <div>
+            <div className="wizard-control-btns">
               <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                 Back
               </Button>
@@ -182,10 +260,12 @@ export const SignUp = () => {
                 color="primary"
                 onClick={handleNext}
                 className={classes.button}
+                disabled={checkIfNextEnabled(activeStep)}
               >
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
             </div>
+            <Typography className={classes.instructions} component={'div'} variant={'body2'}>{getStepContent(activeStep)}</Typography>
           </div>
         )}
       </div>
