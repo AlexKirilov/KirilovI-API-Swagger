@@ -11,9 +11,14 @@ import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
+const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 export const SignIn = () => {
   let history = useHistory();
-  
+  const [invalid, setInvalid] = React.useState({
+    format: null,
+    notMatched: null
+  });
   const [userDetails, setValues] = React.useState({
     email: "",
     company: "",
@@ -34,7 +39,7 @@ export const SignIn = () => {
   };
 
   const btnClick = () => {
-    signIn(history, userDetails.email, userDetails.password, userDetails.company).then(res => {
+    signIn(userDetails.email, userDetails.password, userDetails.company).then(res => {
       if (!res) return
       else if (res.status && res.data) { // TODO: it requires a better way
         setValues({ ...userDetails, errorMsg: res.data.message });
@@ -50,15 +55,20 @@ export const SignIn = () => {
     });
   }
 
+  const checkEmailHandler = (e) => {
+    const email = e.target.value;
+    if (email.length > 8) {
+      if (!regex.test(email)) setInvalid({ ...invalid, format: 'Invalid email format' })
+      else setInvalid({ ...invalid, format: null });
+    } else setInvalid({ ...invalid, format: null });
+    handleEmailChange(e);
+  };
+
   return (
     <section className="full-page">
       <form className="in-middle" autoComplete="off" >
 
-        <EmailInput
-          value={userDetails.password}
-          onChange={handleEmailChange}
-          required={true}
-        ></EmailInput>
+        <EmailInput name="email" email={userDetails.email} onChange={checkEmailHandler} invalid={invalid.format} required={true}></EmailInput>
 
         <PassInput
           value={userDetails.password}
@@ -76,9 +86,7 @@ export const SignIn = () => {
           />
         </FormControl>
 
-        <label
-          className="error-msg"
-        >{userDetails.errorMsg}</label>
+        <div className="error-msg">{userDetails.errorMsg}</div>
 
         <Button variant="contained" color="primary" disableElevation onClick={btnClick} className="submit-btn">
           Sign In

@@ -23,6 +23,7 @@
 .full-page .in-middle .company-input {
   width        : 100%;
   margin-bottom: 10px;
+  min-height   : 70px;
 }
 
 .full-page .in-middle .submit-btn {
@@ -32,6 +33,7 @@
 
 .full-page .in-middle .error-msg {
   width      : 100%;
+  min-height : 15px;
   color      : red;
   margin-top : 10px;
   font-size  : 11px;
@@ -115,6 +117,31 @@
   width    : 100%;
 }
 
-#reg-step5-company-details .MuiTextField-root {
+#reg-step5-company-details .MuiTextField-root,
+#final-step {
   width: 80% !important;
+}
+
+.card-content-acc-creation {
+  width     : 50%;
+  text-align: center;
+  box-shadow: 0px 2px 1px -1px #00000033, 0px 1px 1px 0px #00000024, 0px 1px 3px 0px #0000001f;
+  background: white;
+
+  .code-screen {
+    text-align: left;
+    background: #070707c9;
+    color     : lime;
+    margin    : 20px auto 0px;
+    padding   : 10px;
+    min-height: 160px;
+
+    .ordered-steps-acc-create {
+      margin: 0 auto;
+    }
+  }
+}
+
+.MuiStepper-horizontal {
+  background-color: transparent !important;
 }

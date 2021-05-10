@@ -1,6 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken';
 import { setToken } from "../../services/CookieService";
-import interceptor from "../../interceptors/interceptor";
+import axiosInstance from "../../interceptors/interceptor";
 
 export const readTokenData = (details) => {
   const token = details.token.replace("Bearer ", "");
@@ -10,7 +10,7 @@ export const readTokenData = (details) => {
   return !!token && tokenDetails.exp; // { message: 'Access granted' };
 }
 
-export const signIn = async (history, email, password, company) => {
+export const signIn = async (email, password, company) => {
   try {
     const str = JSON.stringify({ "email": email, "password": password, "company": company });
     // create a buffer
@@ -18,8 +18,18 @@ export const signIn = async (history, email, password, company) => {
 
     // decode buffer as Base64
     const base64 = buff.toString('base64');
-    debugger;
-    return interceptor(history).post(`/platform/auth/sign-in/${base64}`).then(res => res && res.data ? res.data : res).catch(err => err);
+
+    // return await fetch(`/api/platform/auth/sign-in/${base64}`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'siteID': '6015ac720ab3bc1ce44ee776'
+    //   }
+    // }).catch(err => err)
+    return await axiosInstance()
+      .post(`/platform/auth/sign-in/${base64}`, {})
+      .then(res => res && res.data ? res.data : res)
+      .catch(err => err);
   } catch (error) {
     console.log('Fetch err=> ', error)
     return error;

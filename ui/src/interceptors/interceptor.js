@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getToken, checkSession, logout } from "../services/CookieService";
 
-const interceptors = (history = null) => {
+const axiosInstance = (history = null) => {
 
   let headers = {}
 
@@ -25,7 +25,7 @@ const interceptors = (history = null) => {
     }),
     (error) => {
       const config = error.response.config;
-      const location = config ? config.location.pathname ? config.location.pathname : config.url ? config.url : null : null;
+      const location = config ? config.location && config.location.pathname ? config.location.pathname : config.url ? config.url : null : null;
       console.log('Interceptor ERR 2 => ', location.includes("sign-in"), error.response)
       if (!error.response) {
         return Promise.reject(error.response)
@@ -44,4 +44,4 @@ const interceptors = (history = null) => {
   return axiosInstance;
 }
 
-export default interceptors();
+export default axiosInstance;
