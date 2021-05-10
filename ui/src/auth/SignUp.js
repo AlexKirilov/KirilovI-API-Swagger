@@ -117,7 +117,7 @@ function getSteps() {
 export const SignUp = () => {
   const steps = getSteps();
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(5);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [formDetails, setFormDetails] = React.useState({
     email: "",
     password: "",
