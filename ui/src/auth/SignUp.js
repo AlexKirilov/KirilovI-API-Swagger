@@ -9,6 +9,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 import StepConnector from '@material-ui/core/StepConnector';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { signUp } from './services/authService';
 
 import { RegistrationStepInfo } from "./components/RegStep0";
 import { RegistrationStep1 } from "./components/RegStep1";
@@ -118,6 +119,7 @@ export const SignUp = () => {
   const steps = getSteps();
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [accCreationRes, setCreationRes] = React.useState(null);
   const [formDetails, setFormDetails] = React.useState({
     email: "",
     password: "",
@@ -127,12 +129,12 @@ export const SignUp = () => {
     companyName: "",
     webSiteType: "none",
     isEmailValid: false,
+    isCompanyExist: false,
     isPasswordValid: false,
     agreementChecked: false
   });
 
   const handleFormUpdate = (e) => {
-    console.log([e.target.name], e.target.value)
     setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
   }
 
@@ -141,29 +143,50 @@ export const SignUp = () => {
   }
 
   const handlerPassValidationChange = (e) => {
-    console.log('isPasswordValid', e)
     setFormDetails({ ...formDetails, isPasswordValid: e });
   }
-  
+
   const handlerEmailValidation = (e) => {
     setFormDetails({ ...formDetails, isEmailValid: e });
   }
 
+  const handlerCompanyValidation = (e) => {
+    setFormDetails({ ...formDetails, isCompanyExist: e });
+  }
+
+  const validFormValues = () => {
+    return formDetails.email !== "" && formDetails.password !== "" &&
+      formDetails.password.length >= 8 && formDetails.webSiteType !== "none" &&
+      formDetails.isEmailValid && formDetails.isPasswordValid && formDetails.agreementChecked
+      && formDetails.companyName !== "";
+  }
+
   const createAccount = () => {
-    console.log('Create account => ', formDetails);
+    if (validFormValues()) {
+      const { isEmailValid, isPasswordValid, agreementChecked, ...data } = formDetails;
+      signUp(data).then((res) => {
+        console.log('Account created => ', res);
+        setCreationRes(res);
+      },
+        (err) => {
+          setCreationRes(err.data ? err.data : err);
+          console.log('Issue with creating new account => ', err)
+        });
+    } else {
+      console.log('Issue an occur on entering the new account details. Form validation failed!')
+    }
   }
 
   const checkIfNextEnabled = (step = activeStep) => {
-    console.log('Ac Step => ', step)
     if (step === 1)
-      return !(formDetails.company !== '' && formDetails.webSiteType !== "none")
+      return !(formDetails.company !== '' && formDetails.webSiteType !== "none" && !formDetails.isCompanyExist)
     else if (step === 2)
       return !(formDetails.email !== '' && formDetails.isEmailValid)
     else if (step === 3)
       return !(formDetails.password !== '' && formDetails.isPasswordValid)
     else if (step === 4)
       return !(formDetails.username !== '' || formDetails.firstName !== "" && formDetails.lastName !== "")
-      else if (step === 5)
+    else if (step === 5)
       return !(formDetails.agreementChecked)
     return false;
   }
@@ -178,6 +201,7 @@ export const SignUp = () => {
           companyType={formDetails.webSiteType}
           handleCompanyChange={handleFormUpdate}
           handleCompanyTypeChange={handleFormUpdate}
+          handlerCompanyValidation={handlerCompanyValidation}
         >
         </RegistrationStep1>;
       case 2:
@@ -243,7 +267,7 @@ export const SignUp = () => {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions} component={'div'} variant={'body2'}>
-              <FinalStepAccCreation></FinalStepAccCreation>
+              <FinalStepAccCreation finalMSG={accCreationRes}></FinalStepAccCreation>
             </Typography>
             <Button onClick={handleReset} className={classes.button}>
               Reset

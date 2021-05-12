@@ -12,7 +12,7 @@ const stepsList = [
 ];
 
 
-export const FinalStepAccCreation = (props) => {
+export const FinalStepAccCreation = ({ finalMSG }) => {
   const [steps, setSteps] = React.useState([]);
 
   function loadSteps(i) {
@@ -24,38 +24,50 @@ export const FinalStepAccCreation = (props) => {
     }, 2000)
   }
 
-  if (!steps.length)
-    loadSteps(0);
+
+  if (finalMSG && finalMSG.data && finalMSG.data.message) {
+    setSteps([]);
+  } else {
+    if (!steps.length)
+      loadSteps(0);
+  }
 
   return (
     <div className="regForm" id="final-step">
 
       <section className="card-content-acc-creation">
         <div style={{ minHeight: '180px' }}>
-          {steps.length < stepsList.length ? (
-            <div>
-              <h3>We are preparing your environment and it will take a few seconds.</h3>
-              <h4>Please wait and do not refresh the page!</h4>
-              <div className="box">
-                <div className="loader-37"></div>
+          {
+            (steps && steps.length < stepsList.length && (finalMSG && finalMSG.data && !finalMSG.message)) ? (
+              <div>
+                <h3>We are preparing your environment and it will take a few seconds.</h3>
+                <h4>Please wait and do not refresh the page!</h4>
+                <div className="box">
+                  <div className="loader-37"></div>
+                </div>
               </div>
-            </div>
-          ) : (
-
-            <div>
-              <h3>Account was created successfully</h3>
-              <p style={{
-                textAlign: 'justify',
-                width: '70%',
-                margin: '20px auto'
-              }}>
-                To activate the account, please open your email and follow the activation link,
-                if it's not used in 24 hours, account will be delete.
+            ) : (
+              (finalMSG && finalMSG.data && !finalMSG.message) ? (
+                <div>
+                  <h3>Account was created successfully</h3>
+                  <p style={{
+                    textAlign: 'justify',
+                    width: '70%',
+                    margin: '20px auto'
+                  }}>
+                    To activate the account, please open your email and follow the activation link,
+                    if it's not used in 24 hours, account will be delete.
             </p>
 
-              <ThumbUpIcon color="primary" style={{ fontSize: '70px' }}></ThumbUpIcon>
-            </div>
-          )}
+                  <ThumbUpIcon color="primary" style={{ fontSize: '70px' }}></ThumbUpIcon>
+                </div>
+              ) : (
+                <div className="fail-acc-creation-msg">
+                  <p>We are sorry, but there was an issue with provided details. Please use the button below to reset the form and try again.</p>
+                  <p>Error is: {finalMSG && finalMSG.data ? finalMSG.data.message : 'unknown'}</p>
+                </div>
+              )
+            )}
 
         </div>
 

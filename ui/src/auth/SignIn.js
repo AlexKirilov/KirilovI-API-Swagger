@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { EmailInput } from "./components/EmailInput";
 import { PassInput } from "./components/PassInput";
-import { signIn, readTokenData } from "./services/signInService";
+import { signIn, readTokenData } from "./services/authService";
 
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';

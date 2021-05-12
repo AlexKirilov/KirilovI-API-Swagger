@@ -17,6 +17,7 @@ export const EmailInput = (props) => {
         error={props.invalid !== null}
         helperText={props.invalid}
         required={props.required}
+        onBlur={props.onBlur}
       />
     </FormControl>
   )

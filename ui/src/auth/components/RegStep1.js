@@ -5,8 +5,19 @@ import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
+import { checkForExistingWebSiteName } from "../services/authService.js";
 
-export const RegistrationStep1 = ({company, companyType, handleCompanyChange, handleCompanyTypeChange}) => {
+
+export const RegistrationStep1 = ({ company, companyType, handleCompanyChange, handleCompanyTypeChange, handlerCompanyValidation }) => {
+  const [isExist, setIsExist] = React.useState(false);
+
+  const handlerCheckName = async (e) => {
+    const res = await checkForExistingWebSiteName(e.target.value)
+    const exist = e.target.value && e.target.value.length ?
+      (typeof res === "boolean") ? res : res.data : false;
+    setIsExist(exist);
+    handlerCompanyValidation(exist);
+  }
 
   return (
     <div className="regForm" id="reg-step1-company-details">
@@ -19,8 +30,11 @@ export const RegistrationStep1 = ({company, companyType, handleCompanyChange, ha
           label="Company Name"
           type="text"
           value={company}
+          error={isExist !== false}
+          helperText={isExist ? 'Company name already exists' : null}
           onChange={handleCompanyChange}
           required={true}
+          onBlur={handlerCheckName}
         />
       </FormControl>
 

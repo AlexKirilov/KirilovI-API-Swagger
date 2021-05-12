@@ -1,7 +1,8 @@
 
 'use strict';
 import Auth from '../../models/Auth.js';
-import { setLogMSG } from "../../func.js";
+import Site from '../../models/Site.js';
+import { setLogMSG, checkForExistingEmail } from "../../func.js";
 
 function authAuthByID() {
 
@@ -23,7 +24,18 @@ function authAuthByID() {
     }
   }
 
-  return { verify };
+  async function email(req, res) {
+    const bool = await checkForExistingEmail(req.email);
+    return res.status(200).send(bool);
+  }
+
+  async function websiteName(req, res) {
+    console.log('Check for Name', req.name);
+    const isExist = await Site.findOne({ name: req.name });
+    return res.status(200).send(isExist ? true : false);
+  }
+
+  return { verify, email, websiteName };
 }
 
 export default authAuthByID;

@@ -26,12 +26,13 @@ const axiosInstance = (history = null) => {
     (error) => {
       const config = error.response.config;
       const location = config ? config.location && config.location.pathname ? config.location.pathname : config.url ? config.url : null : null;
-      console.log('Interceptor ERR 2 => ', location.includes("sign-in"), error.response)
+      console.log('Interceptor ERR 2 => ', location.includes("sign-in"), error.response);
+
       if (!error.response) {
         return Promise.reject(error.response)
       }
 
-      if (error.response.status === 403 && !location.includes("sign-in")) {
+      if (error.response.status === 401 && !location.includes("sign-in") && !location.includes("sign-up")) {
         logout();
         if (history) history.push('/sign-in');
         else window.location = "/sign-in";

@@ -12,6 +12,7 @@
 import { Router } from 'express';
 import { check, validationResult } from "express-validator";
 import authController from "../controllers/auth/employeeAuthCTRL.js";
+import { getSiteID } from "../func.js";
 
 const router = Router();
 const controller = authController();

@@ -84,7 +84,7 @@ export function validateConfirmationToken(req, res, next) {
     // const payload = 
     const payload = jsonwebtoken.verify(token, process.env.CONF_KEY, (err, conf) => {
       if (err !== undefined && err !== null) {
-        return res.send(500).send(err);
+        return res.sendStatus(500).send(err);
       } else if (new Date().getTime() >= conf.exp) {
         const tokenData = jsonwebtoken.decode(token);
         const confToken = createConfirmationToken(tokenData);

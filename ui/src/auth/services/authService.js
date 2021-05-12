@@ -7,7 +7,7 @@ export const readTokenData = (details) => {
   const tokenDetails = jsonwebtoken.decode(token);
   setToken(details.token, tokenDetails.exp);
 
-  return !!token && tokenDetails.exp; // { message: 'Access granted' };
+  return !!token && tokenDetails.exp;
 }
 
 export const signIn = async (email, password, company) => {
@@ -19,23 +19,35 @@ export const signIn = async (email, password, company) => {
     // decode buffer as Base64
     const base64 = buff.toString('base64');
 
-    // return await fetch(`/api/platform/auth/sign-in/${base64}`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'siteID': '6015ac720ab3bc1ce44ee776'
-    //   }
-    // }).catch(err => err)
     return await axiosInstance()
       .post(`/platform/auth/sign-in/${base64}`, {})
       .then(res => res && res.data ? res.data : res)
       .catch(err => err);
   } catch (error) {
-    console.log('Fetch err=> ', error)
     return error;
   }
 }
 
+export const signUp = async (newAccDetails) => {
+  return await axiosInstance()
+    .post(`/platform/auth/sign-up/`, newAccDetails)
+    .then(res => res && res.data ? res.data : res)
+    .catch(err => err);
+}
+
+export const checkForExistingEmail = async (email) => {
+  return await axiosInstance()
+    .get(`/verify/email/${email}`)
+    .then(res => res && res.data ? res.data : res)
+    .catch(err => err);
+}
+
+export const checkForExistingWebSiteName = async (name) => {
+  return await axiosInstance()
+    .get(`/verify/websiteName/${name}`)
+    .then(res => res && res.data ? res.data : res)
+    .catch(err => err);
+}
 
 // export async function getAllLogs() {
 
