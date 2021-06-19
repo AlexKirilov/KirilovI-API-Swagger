@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-d
 
 import { SignIn } from './auth/SignIn';
 import { SignUp } from './auth/SignUp';
+import { Verify } from './auth/Verify';
 import { PassRestore } from './auth/PassRestore';
 
 // Main Components
@@ -46,6 +47,7 @@ function App() {
             <Route path="/sign-in" exact component={SignIn} />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/restore-pass" component={PassRestore} />
+            <Route path="/verifyMe/:token" component={Verify} />
           </Switch>
           {/* <HomePage></HomePage> */}
         </section>

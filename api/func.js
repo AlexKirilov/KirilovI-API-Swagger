@@ -16,56 +16,6 @@ const authLevelAsNum = { // enums
   "SA": 5,
 };
 
-const resentHTML = (expTime, verifyURL, deleteURL) => `
-<h1>Verification link expired at ${expTime}.</h1>
-<p>Press on the "Resend" button to resend the verification link.</p>
-<p>Press on the "Delete" button to delete your account from our databases.</p>
-
-<form action="${verifyURL}">
-    <input type="submit" value="Resend" />
-</form>
-<form action="${deleteURL}">
-    <input type="submit" value="Delete my account" />
-</form>
-`;
-
-export function sendMail(URI, sendTo, callback = (s) => s) {
-  // Create a SMTP transporter object
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'imap.ethereal.email',
-    port: 993,
-    secure: true,
-    auth: {
-      user: process.env.MONGODB_USERNAME, // "alexkkirilovgames2@gmail.com",
-      pass: process.env.MONGODB_PASS // "AxelF0x1"
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
-  });
-
-  // Message object
-  const message = {
-    from: 'Kirilovi API',
-    to: sendTo,
-    subject: 'Kirilovi API account confirmation',
-    text: `
-      <a1>Hello bastard!</a1>
-      
-      Please click me: ${URI}`,
-  };
-
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      console.log('Error occurred. ' + err.message);
-      return process.exit(1);
-    }
-
-    callback(`Message sent: ${info.messageId}`);
-  });
-};
-
 export function createConfirmationToken(user) {
   const minutes = 30; // expires after minutes
   return jsonwebtoken.sign(
@@ -88,11 +38,12 @@ export function validateConfirmationToken(req, res, next) {
       } else if (new Date().getTime() >= conf.exp) {
         const tokenData = jsonwebtoken.decode(token);
         const confToken = createConfirmationToken(tokenData);
-        const newVerifyLink = `${req.protocol}://${req.get('host')}/platform/auth/verify/${confToken}`;
-        const deleteLink = `${req.protocol}://${req.get('host')}/platform/auth/delete/${confToken}`;
+        const newVerifyLink = `${req.protocol}://${req.get('host')}/api/platform/auth/verify/${confToken}`;
+        const deleteLink = `${req.protocol}://${req.get('host')}/api/platform/auth/delete/${confToken}`;
         const expDate = new Date(tokenData.exp).toLocaleString().toString();
 
-        return res.send(resentHTML(expDate, newVerifyLink, deleteLink));
+        // return res.send(resentHTML(expDate, newVerifyLink, deleteLink));
+        return res.status(404).send({ expDate, newVerifyLink, deleteLink });
       } else {
         req._id = conf._id;
         req.email = conf.email;
@@ -172,8 +123,8 @@ export function validateEmail(email) {
 }
 
 export async function checkForExistingEmail(email) {
-  const auth = await Auth.findOne({ email });
-  const customer = await Customers.findOne({ email });
+  const auth = await Auth.findOne({ email: { $regex: new RegExp(email, "i") } });
+  const customer = await Customers.findOne({ email: { $regex: new RegExp(email, "i") } });
   return !!auth || !!customer;
 }
 
@@ -253,13 +204,13 @@ export function generatePublicKey() {
 
 export function signInBase64Encoding(req, res, next) {
   if (!req.headers.siteid || (!req.params && !req.params.base))
-    return res.status(401).send({ message: "Invalid credentials"});
+    return res.status(401).send({ message: "Invalid credentials" });
 
   const buff = new Buffer.from(req.params.base, 'base64');
   const params = JSON.parse(buff.toString('ascii'));
 
   if (!validateEmail(params.email)) {
-    return res.status(400).json({message: 'Invalid email format'})
+    return res.status(400).json({ message: 'Invalid email format' })
   }
 
   req.email = params.email;

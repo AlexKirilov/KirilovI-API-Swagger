@@ -49,6 +49,19 @@ export const checkForExistingWebSiteName = async (name) => {
     .catch(err => err);
 }
 
+export const verifyToken = async (token) => {
+  return await axiosInstance()
+    .get(`/verify/token/${token}`)
+    .then(res => res && res.data ? res.data : res)
+    .catch(err => err);
+}
+
+export const getSiteTypes = async () => {
+  return axiosInstance()
+    .get('platform/siteTypes/')
+    .then(res => res && res.data ? res.data : res)
+    .catch(err => err);
+}
 // export async function getAllLogs() {
 
 //   try {

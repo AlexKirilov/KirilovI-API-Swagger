@@ -22,8 +22,12 @@ import { employeeRoute } from "./api/routers/employees.js";
 
 // Remaining
 import { logsRoute } from "./api/routers/logs.js";
+import { siteTypesRoute } from "./api/routers/siteTypes.js";
 import { productRoute } from "./api/routers/products.js";
 import { ordersRoute } from "./api/routers/orders.js";
+
+// Scheduler
+import { runDaily } from "./api/scheduler/dailyChecks.js";
 
 const __dirname = path.resolve();
 const app = express();
@@ -65,6 +69,7 @@ app.use('/api/client-docs', serve, (...args) => setup(clientDocument)(...args));
 app.use('/api/auth', customerAuthRouter());
 // app.use('/employeeAuth', employeeAuthRoute());
 app.use('/api/platform/auth', platformAuthRouter());
+app.use('/api/platform/siteTypes', siteTypesRoute());
 app.use('/api/verify', verifyAuthRoute());
 
 // Platform requests ONLY
@@ -94,6 +99,10 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, 'ui/build', 'index.html'));
   });
 }
+
+// Scheduler
+// For more details visit the link: https://www.npmjs.com/package/node-schedule
+runDaily();
 
 
 /**

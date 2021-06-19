@@ -13,15 +13,6 @@ export const RegistrationStepInfo = (props) => {
           System will detect inactivity for 6 months and it will delete all details permanently.
         </p>
       </section>
-      {/* <TextField
-        id="reg-data-form-info"
-        label="Multiline"
-        multiline
-        rows={20}
-        defaultValue="Default Value"
-        variant="outlined"
-      /> */}
-
     </div>
   )
 }

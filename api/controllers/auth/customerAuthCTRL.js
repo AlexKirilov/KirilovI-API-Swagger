@@ -5,10 +5,11 @@ import { compare } from 'bcrypt-nodejs';
 // import nodemailer from "nodemailer";
 import * as variables from "../../var.js";
 import { check, validationResult, body } from "express-validator";
+import { sendMail } from '../../mailer/sendMail.js';
 import {
   createToken, refreshToken,
   createConfirmationToken, checkForExistingEmail,
-  sendMail, setLogMSG
+  setLogMSG
 } from '../../func.js';
 // TODO: Page where the Site Owner can update the confirmation email details - Link will remain the same !!!
 // TODO: Add active check if not send new email with confirmation message and url
@@ -101,9 +102,9 @@ export async function signUp(req, res) {
       // Link will remain the same
 
       const confToken = createConfirmationToken(customer);
-      const URI = `${req.protocol}://${req.get('host')}/auth/verify/${confToken}`;
+      const URI = `${req.protocol}://${req.get('host')}/api/auth/verify/${confToken}`;
 
-      sendMail(URI, req.body.email, (msg) => {
+      sendMail('signUp', req.body.email, URI, (msg) => {
         return res.status(200).send(msg);
       });
 

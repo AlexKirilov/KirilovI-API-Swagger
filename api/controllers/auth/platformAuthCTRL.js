@@ -4,12 +4,12 @@ import Auth from '../../models/Auth.js';
 import { compare } from 'bcrypt-nodejs';
 import * as variables from "../../var.js";
 import { check, validationResult, body } from "express-validator";
+import { sendMail } from '../../mailer/sendMail.js';
 import {
   createToken, refreshToken,
   createConfirmationToken, checkForExistingEmail,
-  generatePublicKey, sendMail, setLogMSG
+  generatePublicKey, setLogMSG
 } from '../../func.js';
-
 /**
  * That Controller will be used ONLY for the Platform purposes
  * The control details will not be include into the clientSwagger
@@ -57,14 +57,14 @@ export async function signIn(req, res) {
       return res.status(404).send(variables.errorMsg.notfound);
     } else {
       compare(req.password, userData.password, (err, isMatch) => {
-        if (err) return res.status(401).send({message: "Invalid credentials"});
+        if (err) return res.status(401).send({ message: "Invalid credentials" });
         if (!isMatch) {
-          return res.status(401).send({message: "Invalid credentials"});
+          return res.status(401).send({ message: "Invalid credentials" });
         } else {
           if (!userData.active) {
-            return res.status(402).send({message: 'Email is not confirmed yet.'});
+            return res.status(402).send({ message: 'Email is not confirmed yet.' });
           }
-          
+
           // Updating the last user login date-time
           userData.lastLogin = new Date();
           userData.updateOne(userData, (err, newUser) => {
@@ -99,7 +99,7 @@ export async function signUp(req, res) {
     try {
       // Create WebSite
       const publicKey = generatePublicKey();
-      const site = await new Site({ name: req.body.siteName, publicKey }).save();
+      const site = await new Site({ name: req.body.siteName, type: req.body.type, publicKey }).save();
 
       // Create Auth account
       const auth = new Auth(req.body);
@@ -111,11 +111,21 @@ export async function signUp(req, res) {
 
       // Send the confirm email
       const confToken = createConfirmationToken(auth);
-      const URI = `${req.protocol}://${req.get('host')}/platform/auth/verify/${confToken}`;
+      // const URI = `${req.protocol}://${req.get('host')}/api/platform/auth/verify/${confToken}`;
+      const URI = `${req.protocol}://${req.get('host')}/verifyMe/${confToken}`;
 
-      sendMail(URI, req.body.email, (msg) => {
-        return res.status(200).send(msg);
-      });
+      sendMail('signUp', req.body.email, URI,
+        (msg) => {
+          return res.status(200).send(msg);
+        }, (err) => {
+          // On Error delete the account
+          Site.findOneAndDelete({ name: req.body.siteName, publicKey }).then(() => {
+            Auth.findOneAndDelete({ email: req.body.email }).then(() => {
+              console.log('account was deleted');
+              return res.status(500).send({message: 'There was an issue sending the email, account details were deleted. If the issue occur again contact with your administrator!'});
+            })
+          })
+        });
 
     } catch (err) {
       setLogMSG(null, null, 'fatal', 'signUp', 'post', err);

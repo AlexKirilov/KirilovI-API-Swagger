@@ -1,3 +1,4 @@
+import "./auth.scss";
 import clsx from 'clsx';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -10,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import StepConnector from '@material-ui/core/StepConnector';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { signUp } from './services/authService';
+import { useHistory } from "react-router-dom";
 
 import { RegistrationStepInfo } from "./components/RegStep0";
 import { RegistrationStep1 } from "./components/RegStep1";
@@ -116,9 +118,11 @@ function getSteps() {
 }
 
 export const SignUp = () => {
+  const history = useHistory();
+
   const steps = getSteps();
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(6);
   const [accCreationRes, setCreationRes] = React.useState(null);
   const [formDetails, setFormDetails] = React.useState({
     email: "",
@@ -163,14 +167,19 @@ export const SignUp = () => {
 
   const createAccount = () => {
     if (validFormValues()) {
-      const { isEmailValid, isPasswordValid, agreementChecked, ...data } = formDetails;
-      signUp(data).then((res) => {
-        console.log('Account created => ', res);
-        setCreationRes(res);
-      },
-        (err) => {
+      const { isEmailValid, isPasswordValid, agreementChecked, companyName, webSiteType, ...data } = formDetails;
+      data.siteName = companyName;
+      data.type = webSiteType;
+      
+      setCreationRes('start');
+
+      signUp(data).then(
+        res => {
+          setCreationRes('done');
+        },
+        err => {
           setCreationRes(err.data ? err.data : err);
-          console.log('Issue with creating new account => ', err)
+          console.log('Issue has occur creating the new account => ', err)
         });
     } else {
       console.log('Issue an occur on entering the new account details. Form validation failed!')
@@ -253,6 +262,10 @@ export const SignUp = () => {
     setActiveStep(0);
   };
 
+  const handlerToLogin = () => {
+    history.push('/sign-in/');
+  }
+
   return (
     <div className={classes.root}>
       <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>
@@ -269,6 +282,12 @@ export const SignUp = () => {
             <Typography className={classes.instructions} component={'div'} variant={'body2'}>
               <FinalStepAccCreation finalMSG={accCreationRes}></FinalStepAccCreation>
             </Typography>
+            <Button
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              className={activeStep !== 0 ? '' : 'hide ' + classes.button}>
+              Back
+              </Button>
             <Button onClick={handleReset} className={classes.button}>
               Reset
             </Button>
@@ -276,9 +295,20 @@ export const SignUp = () => {
         ) : (
           <div>
             <div className="wizard-control-btns">
-              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+              <Button
+                variant="contained"
+                className={activeStep !== 0 ? 'hide ' : '' + classes.button}
+                color="primary"
+                onClick={handlerToLogin}
+              > To Login Page</Button>
+
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                className={activeStep !== 0 ? '' : 'hide ' + classes.button}>
                 Back
               </Button>
+
               <Button
                 variant="contained"
                 color="primary"

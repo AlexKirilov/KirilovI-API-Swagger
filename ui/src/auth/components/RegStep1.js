@@ -1,15 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
-import { checkForExistingWebSiteName } from "../services/authService.js";
+import { checkForExistingWebSiteName, getSiteTypes } from "../services/authService.js";
 
 
 export const RegistrationStep1 = ({ company, companyType, handleCompanyChange, handleCompanyTypeChange, handlerCompanyValidation }) => {
+  useEffect(() => {
+    let isSubscribed = true;
+
+    if (isSubscribed)
+      getList()
+
+    // cancel subscription to useEffect
+    return () => (
+      isSubscribed = false
+    )
+  }, []);
+
   const [isExist, setIsExist] = React.useState(false);
+  const [siteList, setSiteList] = React.useState([]);
+
+  const getList = () => {
+    getSiteTypes().then((list) => {
+      if (list && list.length > 0) {
+        setSiteList(list);
+      }
+    })
+  }
 
   const handlerCheckName = async (e) => {
     const res = await checkForExistingWebSiteName(e.target.value)
@@ -52,11 +73,13 @@ export const RegistrationStep1 = ({ company, companyType, handleCompanyChange, h
           inputProps={{ 'aria-label': 'Without label' }}
         >
           <MenuItem value="none"><em>None</em></MenuItem>
-          <MenuItem value="shop">Shop</MenuItem>
-          <MenuItem value="property">Property</MenuItem>
+          {
+            siteList.map((type) => (
+              <MenuItem value={type.id} key={'key-' + type.id}>{type.name}</MenuItem>
+            ))
+          }
         </Select>
       </FormControl>
-
     </div>
   )
 }
