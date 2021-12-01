@@ -30,7 +30,6 @@ function authAuthByID() {
   }
 
   async function websiteName(req, res) {
-    console.log('Check for Name', req.name);
     const isExist = await Site.findOne({ name: { $regex : new RegExp(req.name, "i") } });
     return res.status(200).send(isExist ? true : false);
   }

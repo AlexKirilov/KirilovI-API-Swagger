@@ -71,7 +71,7 @@ export function createToken(res, user, siteData) {
 
   return res.status(200).send({
     token: `Bearer ${token}`,
-    username: (user.lastname.trim() == "" || user.lastname === null) ? user.firstname : user.lastname
+    username: user.username || (user.lastname.trim() == "" || user.lastname === null) ? user.firstname : user.lastname
   });
 };
 
@@ -217,7 +217,7 @@ export function signInBase64Encoding(req, res, next) {
   req.company = params.company;
   req.password = params.password;
   req.siteID = req.headers.siteid;
-
+  console.log(req.siteID, params)
   next()
 }
 

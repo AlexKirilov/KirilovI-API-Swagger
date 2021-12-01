@@ -10,6 +10,7 @@ const AuthSchema = new mongoose.Schema({
   siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site' },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  username: { type: String, default: '' },
   firstname: { type: String, default: '' },
   lastname: { type: String, default: '' },
   levelAuth: { type: String, default: 'EE' },
