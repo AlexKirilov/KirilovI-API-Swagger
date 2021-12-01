@@ -1,37 +1,49 @@
-import { PieChart } from "../../charts/Pie";
+import React from "react";
+import PropTypes from "prop-types";
+import styles from "./Dashboard.module.scss";
 
-const pieData = [
-  {
-    country: "Lithuania",
-    litres: 501.9
-  },
-  {
-    country: "Czech Republic",
-    litres: 301.9
-  },
-  {
-    country: "Ireland",
-    litres: 201.1
-  },
-  {
-    country: "Germany",
-    litres: 165.8
-  },
-  {
-    country: "Australia",
-    litres: 139.9
-  },
-  {
-    country: "Austria",
-    litres: 1280.3
-  }
-];
-export const DashboardPage = () => {
+import PieChart from "../../components/charts/PieChart/PieChart.lazy";
+import LineChart from "../../components/charts/LineChart/LineChart.lazy";
+
+const Dashboard = () => {
+  var lineChartData = [
+    {
+      x: [1, 2, 3, 4],
+      y: [10, 15, 13, 17],
+      type: "scatter",
+      marker: { color: "red" },
+      mode: "lines",
+      name: "sales",
+    },
+  ];
+
+  const pieChartData = [
+    {
+      values: [19, 26, 55],
+      labels: ["Residential", "Non-Residential", "Utility"],
+      type: "pie",
+      hole: .5,
+      text: "CO2",
+      textposition: "inside",
+      // domain: { column: 1 },
+      name: "CO2 Emissions",
+      hoverinfo: "label+percent+name",
+    },
+  ];
 
   return (
-    <section>
-      <p>Dashboard Page</p>
-      <PieChart data={pieData}></PieChart>
-    </section>
-  )
-}
+    <div className={styles.Dashboard} data-testid="Dashboard">
+      <LineChart data={lineChartData} className={styles.SalesLineChart}></LineChart>
+      <PieChart data={pieChartData}></PieChart>
+      <PieChart data={pieChartData}></PieChart>
+      <PieChart data={pieChartData}></PieChart>
+      <PieChart data={pieChartData}></PieChart>
+    </div>
+  );
+};
+
+Dashboard.propTypes = {};
+
+Dashboard.defaultProps = {};
+
+export default Dashboard;
