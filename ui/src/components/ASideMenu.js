@@ -30,7 +30,7 @@ export const ASideMenu = (props) => {
       onKeyDown={props.toggleDrawer(position, false)}
     >
       <List>
-        {['Dashboard', 'Employees', 'Customers', 'Orders'].map((text, index) => (
+        {['Dashboard', 'Employees', 'Customers', 'Purchases', 'Details', 'Logs'].map((text, index) => (
           <Link to={"/" + text.toLocaleLowerCase()} className="aside-nav-items">
             <ListItem button key={text}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>

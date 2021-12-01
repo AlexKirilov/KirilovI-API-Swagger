@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.scss';
-import { checkSession } from "./services/CookieService"
+import { checkSession } from "./Core/services/CookieService"
 
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
@@ -15,8 +15,12 @@ import { HeaderHome } from "./components/HeaderHome";
 
 // Main Pages
 import { HomePage } from "./pages/home/Home";
-import { DashboardPage } from "./pages/dashboard/Dashboard";
-import { EmployeesPage } from "./pages/employees/Employees";
+import Dashboard from "./pages/Dashboard/Dashboard.lazy";
+import Employees from "./pages/Employees/Employees.lazy";
+import Clients from "./pages/Clients/Clients.lazy";
+import Orders from "./pages/Orders/Orders.lazy";
+import SiteDetails from "./pages/SiteDetails/SiteDetails.lazy";
+import SiteLogs from "./pages/SiteLogs/SiteLogs.lazy";
 
 function App() {
 
@@ -28,8 +32,13 @@ function App() {
           <section>
             <Switch>
               <Redirect from="/" exact to="/dashboard/" />
-              <Route path="/dashboard" component={DashboardPage} />
-              <Route path="/employees" component={EmployeesPage} />
+              <Route path="/dashboard" component={Dashboard} />
+              <Route path="/employees" component={Employees} />
+              <Route path="/customers" component={Clients} />
+              <Route path="/purchases" component={Orders} />
+              <Route path="/details" component={SiteDetails} />
+              <Route path="/logs" component={SiteLogs} />
+
               {/* <Route path="/restore-pass" component={PassRestore} /> */}
             </Switch>
           </section>

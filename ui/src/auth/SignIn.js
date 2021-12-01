@@ -41,9 +41,9 @@ export const SignIn = () => {
   const btnClick = () => {
     signIn(userDetails.email, userDetails.password, userDetails.company).then(res => {
       if (!res) return
-      else if (res.status && res.data) { // TODO: it requires a better way
+      else if (res.status !== 200 && res.data && Object.keys(res.data)) { // TODO: it requires a better way
         setValues({ ...userDetails, errorMsg: res.data.message });
-      } else if (readTokenData(res)) {
+      } else if (res.token && readTokenData(res)) {
         setValues({ ...userDetails, errorMsg: "" });
         history.push("/dashboard");
         window.location.reload(); // TODO: Need better way

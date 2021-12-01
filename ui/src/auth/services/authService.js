@@ -1,8 +1,9 @@
 import jsonwebtoken from 'jsonwebtoken';
-import { setToken } from "../../services/CookieService";
-import axiosInstance from "../../interceptors/interceptor";
+import { setToken } from "../../Core/services/CookieService";
+import axiosInstance from "../../Core/interceptors/interceptor";
 
 export const readTokenData = (details) => {
+  debugger
   const token = details.token.replace("Bearer ", "");
   const tokenDetails = jsonwebtoken.decode(token);
   setToken(details.token, tokenDetails.exp);

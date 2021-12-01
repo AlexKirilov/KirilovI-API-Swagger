@@ -18,7 +18,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 
 import { ASideMenu } from "./ASideMenu";
 
-import { logout } from "../services/CookieService";
+import { logout } from "../Core/services/CookieService";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
