@@ -1,74 +1,96 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from 'react-redux';
+
 import PropTypes from "prop-types";
 import styles from "./Employees.module.scss";
-
 import TableComp from "../../components/TableComp/TableComp.lazy";
+import { useDispatch} from "react-redux";
+import { loadEmployeeList } from "../../Core/redux/Actions/employee.actions";
 
-function createData(id, name, calories, fat, carbs, protein) {
-  return {
-    id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData(1, "Cupcake", 305, 3.7, 67, 4.3),
-  createData(2, "Donut", 452, 25.0, 51, 4.9),
-  createData(3, "Eclair", 262, 16.0, 24, 6.0),
-  createData(4, "Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData(5, "Gingerbread", 356, 16.0, 49, 3.9),
-  createData(6, "Honeycomb", 408, 3.2, 87, 6.5),
-  createData(7, "Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData(8, "Jelly Bean", 375, 0.0, 94, 0.0),
-  createData(9, "KitKat", 518, 26.0, 65, 7.0),
-  createData(10, "Lollipop", 392, 0.2, 98, 0.0),
-  createData(11, "Marshmallow", 318, 0, 81, 2.0),
-  createData(12, "Nougat", 360, 19.0, 9, 37.0),
-  createData(13, "Oreo", 437, 18.0, 63, 4.0),
-];
 
 const headCells = [
-  {
-    id: "name",
+    {
+    id: "username",
+    align: "start",
+    icon: false,
+    date: false,
     numeric: false,
     disablePadding: true,
-    label: "Dessert (100g serving)",
+    label: "Username / Names",
   },
   {
-    id: "calories",
-    numeric: true,
+    id: "email",
+    align: "start",
+    icon: false,
+    date: false,
+    numeric: false,
     disablePadding: false,
-    label: "Calories",
+    label: "Email",
   },
   {
-    id: "fat",
-    numeric: true,
+    id: "levelAuth",
+    align: "start",
+    icon: false,
+    date: false,
+    numeric: false,
     disablePadding: false,
-    label: "Fat (g)",
+    label: "Position",
   },
   {
-    id: "carbs",
-    numeric: true,
+    id: "lastLogin",
+    align: "end",
+    icon: false,
+    date: true,
+    numeric: false,
     disablePadding: false,
-    label: "Carbs (g)",
+    label: "Last Login",
   },
   {
-    id: "protein",
-    numeric: true,
+    id: "lastUpdate",
+    align: "end",
+    icon: false,
+    date: true,
+    numeric: false,
     disablePadding: false,
-    label: "Protein (g)",
+    label: "Account Updated",
   },
+  {
+    id: "created",
+    align: "end",
+    icon: false,
+    date: true,
+    numeric: false,
+    disablePadding: false,
+    label: "Registered",
+  },
+  {
+    id: "active",
+    align: "start",
+    icon: true,
+    date: false,
+    numeric: false,
+    disablePadding: true,
+    label: "Active",
+  }
 ];
 
 
-const Employees = () => {
-  
+const Employees = ({ employeeList }) => {
+  const [employees, setEmployees] = React.useState([]);
+
+  let dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!employeeList) loadEmployeeList(dispatch)
+    else {
+      setEmployees(employeeList?.results || [])
+      console.log('EE List => ', employees)
+    }
+  }, [employeeList])
   // Handle on Add Btn and open the Dialog Screen
-  function handleOnNewItem() { }
+  function handleOnNewItem() {
+    // dispatch(loadEmployeeList())
+  }
 
   // Handle on Delete Btn press and Send DELETE API request for selected items
   // the whole item will be returned as list of objects
@@ -77,14 +99,26 @@ const Employees = () => {
   return (
     <div className={styles.Employees} data-testid="Employees">
       <main>
-        <TableComp rowsData={rows} headCells={headCells} handleOnNewItem={handleOnNewItem} handleOnItemDelete={handleOnItemDelete} isAdmin={true}/>
+        <TableComp rowsData={employees} headCells={headCells} handleOnNewItem={handleOnNewItem} handleOnItemDelete={handleOnItemDelete} isAdmin={true}/>
       </main>
     </div>
   );
 };
 
-Employees.propTypes = {};
+Employees.propTypes = {
+  employeeList: PropTypes.object.isRequired
+};
 
 Employees.defaultProps = {};
 
-export default Employees;
+function mapStateToProps(state) {
+  console.log('STATE => ', state)
+  return {
+    employeeList: state.employeeReducer.employeeList,
+  }
+}
+
+const mapDispatchToProps = {  }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Employees);
+// export default Employees;

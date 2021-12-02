@@ -2,7 +2,6 @@ import axios from "axios";
 import { getToken, checkSession, logout } from "../services/CookieService";
 
 const axiosInstance = (history = null) => {
-
   let headers = {}
 
   const siteID = "6015ac720ab3bc1ce44ee776";

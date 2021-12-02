@@ -3,7 +3,6 @@ import { setToken } from "../../Core/services/CookieService";
 import axiosInstance from "../../Core/interceptors/interceptor";
 
 export const readTokenData = (details) => {
-  debugger
   const token = details.token.replace("Bearer ", "");
   const tokenDetails = jsonwebtoken.decode(token);
   setToken(details.token, tokenDetails.exp);

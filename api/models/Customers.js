@@ -1,13 +1,21 @@
 import mongoose from 'mongoose'
 import { hash as _hash } from 'bcrypt-nodejs';
-
+/* Level of Auth:
+    SA -> SysAdmin 
+    AD -> Admin 
+    MN -> Manager 
+    EE -> Employee
+    CU -> Employee 
+*/
 const customerSchema = new mongoose.Schema({
     siteID: { type: mongoose.Schema.Types.ObjectId, ref: 'Site', required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
+    username: { type: String, default: '' },
     firstname: { type: String, default: '' },
     lastname: { type: String, default: '' },
     company: { type: String, default: '' },
+    levelAuth: { type: String, default: 'CU' },
     created: { type: Date, default: new Date().toISOString() },
     lastLogin: { type: Date, default: new Date().toISOString() },
     lastUpdate: { type: Date, default: new Date().toISOString() },

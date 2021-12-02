@@ -9,11 +9,20 @@ import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import ClearIcon from '@mui/icons-material/Clear';
+import CheckIcon from '@mui/icons-material/Check';
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar";
+
+const DateOptions = {
+  weekday: "short",
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+};
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -45,7 +54,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-// TODO: Future updates make the Sorting and Pagination Server-side 
+// TODO: Future updates make the Sorting and Pagination Server-side
 const TableComp = ({
   rowsData,
   headCells,
@@ -121,6 +130,18 @@ const TableComp = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rowsData.length) : 0;
 
+  function dateFormat(incomeDate) {
+    const date = new Date(incomeDate);
+    if (incomeDate && !isNaN(date))
+      return date.toLocaleDateString("en-US", DateOptions);
+    else return "N/A";
+  }
+
+  function getIcon(value) {
+    if (value === true) return <CheckIcon sx={{color: 'green'}}/>
+    if (value === false) return <ClearIcon sx={{color: 'red'}} />
+  }
+
   return (
     <Box
       sx={{ width: "100%" }}
@@ -152,46 +173,56 @@ const TableComp = ({
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rowsData.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rowsData, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row?.id);
-                  const labelId = `enhanced-table-checkbox-${row?.id}`;
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row?.id}
-                      selected={isItemSelected}
-                    >
-                      {isAdmin ? (
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                          />
-                        </TableCell>
-                      ) : null}
-                      {headCells.map((colName, index) => (
-                        <TableCell
-                          // padding="none"
-                          // scope={index === 0 ? "row" : null}
-                          // id={index === 0 ? labelId : null}
-                          component={index === 0 ? "th" : "td"}
-                          align={colName.numeric ? "right" : "left"}
+              {!rowsData
+                ? null
+                : stableSort(rowsData, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const isItemSelected = isSelected(row?.id);
+                      const labelId = `enhanced-table-checkbox-${row?.id}`;
+                      return (
+                        <TableRow
+                          hover
+                          onClick={(event) => handleClick(event, row)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row?.id}
+                          selected={isItemSelected}
                         >
-                          {row[colName.id]}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  );
-                })}
+                          {isAdmin ? (
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                color="primary"
+                                checked={isItemSelected}
+                                key={row?.id + "cb"}
+                                inputProps={{
+                                  "aria-labelledby": labelId,
+                                }}
+                              />
+                            </TableCell>
+                          ) : null}
+                          {headCells.map((colName, index) => (
+                            <TableCell
+                              // padding="none"
+                              // scope={index === 0 ? "row" : null}
+                              // id={index === 0 ? labelId : null}
+                              key={row?.id + colName.id}
+                              component={index === 0 ? "th" : "td"}
+                              align={colName.align}
+                            >
+                              {colName.numeric
+                                ? row[colName.id]
+                                : colName.date
+                                ? dateFormat(row[colName.id])
+                                : colName.icon
+                                ? getIcon(row[colName.id])
+                                : row[colName.id]}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      );
+                    })}
               {emptyRows > 0 && (
                 <TableRow>
                   <TableCell colSpan={6} />

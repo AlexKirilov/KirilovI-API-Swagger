@@ -1,10 +1,8 @@
 import { combineReducers } from "redux";
-// import { appSettingsReducer } from "./appSettings.reducer";
-// import { searchFiltersReducer } from "./searchFilter.reducer";
+import { employeeReducer } from "./Employee.reducer";
 
 const rootReducer = combineReducers({
-    // appSettingsReducer,
-    // searchFiltersReducer
+    employeeReducer
 }); 
 
 export default rootReducer;

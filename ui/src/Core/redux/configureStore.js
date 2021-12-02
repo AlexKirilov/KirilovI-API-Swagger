@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from "redux";
 import rootReducer from "./Reducers/index";
 import { composeWithDevTools } from 'redux-devtools-extension';
+import thunkMiddleware from 'redux-thunk'
 
 export const storeKey = 'platform_key';
 
@@ -29,7 +30,7 @@ export function loadFromLocalStorage() {
 
 // export type AppState = ReturnType<typeof rootReducer>;
 export const store = createStore(rootReducer, loadFromLocalStorage(), composeWithDevTools(
-    applyMiddleware(),
+    applyMiddleware(thunkMiddleware),
 ));
 
 // listen for store changes and use saveToLocalStorage to
