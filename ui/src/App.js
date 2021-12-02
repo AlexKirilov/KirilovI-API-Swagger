@@ -21,6 +21,8 @@ import Clients from "./pages/Clients/Clients.lazy";
 import Orders from "./pages/Orders/Orders.lazy";
 import SiteDetails from "./pages/SiteDetails/SiteDetails.lazy";
 import SiteLogs from "./pages/SiteLogs/SiteLogs.lazy";
+import ClientSwagger from "./pages/ClientSwagger/ClientSwagger.lazy";
+import Products from "./pages/Products/Products.lazy";
 
 function App() {
 
@@ -35,9 +37,11 @@ function App() {
               <Route path="/dashboard" component={Dashboard} />
               <Route path="/employees" component={Employees} />
               <Route path="/customers" component={Clients} />
+              <Route path="/products" component={Products} />
               <Route path="/purchases" component={Orders} />
               <Route path="/details" component={SiteDetails} />
               <Route path="/logs" component={SiteLogs} />
+              <Route path="/docs" component={ClientSwagger} />
 
               {/* <Route path="/restore-pass" component={PassRestore} /> */}
             </Switch>
