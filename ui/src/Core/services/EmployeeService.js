@@ -1,6 +1,7 @@
 import axiosInstance from "../interceptors/interceptor";
 
 const path = "employees";
+export async function checkIfEmployeeEmailExists() {}
 
 export async function getEmployeeList() {
   try {
@@ -9,11 +10,8 @@ export async function getEmployeeList() {
       .then((res) => {
         const data = res && res.data ? res.data : res;
         if (!data?.results || !data?.results?.length) {
-          console.log("API EMPLOYEES DATA 1", data);
           return data;
-        }
-        else {
-          console.log("API EMPLOYEES DATA 2", data);
+        } else {
           data.results = data.results.map((ee) => {
             ee.id = ee._id;
             delete ee._id;
@@ -45,31 +43,10 @@ export async function getEmployeeById(employeeId) {
   }
 }
 
+// TODO: API - option to create temp accounts / create temp passwords which users could update by following the email link
 export async function addNewEmployee(employeeDetails) {
   if (!employeeDetails)
     return { message: "Provided employees details were empty or invalid" };
-  /** Example
-     * {
-            "password":"$2a$10$TR/yxml/jUQqvhG6bAZEMOSWfMqCOPadPlyymtqF2IU7XpmJR5C7W",
-            "firstname":"I am Updated Name",
-            "lastname":"Updated Last Name",
-            "email":"new@new.com",
-            "levelAuth":"MN",
-            "type":"Manager",
-            "created":"2018-05-30T23:00:00.000+00:00",
-            "lastLogin":"2020-12-01T14:18:47.838+00:00",
-            "active":"true",
-            "siteID":"5fbd61b050682000149ce416",
-            "company":"new",
-            "personalDiscount":"0",
-            "country":"United Kingdom",
-            "town":"SURBITON",
-            "postcode":"545324",
-            "address":"436b Ewell Road",
-            "address1":"",
-            "phone":"3524624523"
-        }
-     */
   try {
     return await axiosInstance()
       .post(`/${path}`, employeeDetails)
@@ -83,28 +60,6 @@ export async function addNewEmployee(employeeDetails) {
 export async function patchEmployeeById(employeeDetails) {
   if (!employeeDetails)
     return { message: "Provided employees details were empty or invalid" };
-  /** Example
-     * {
-            "password":"$2a$10$TR/yxml/jUQqvhG6bAZEMOSWfMqCOPadPlyymtqF2IU7XpmJR5C7W",
-            "firstname":"I am Updated Name",
-            "lastname":"Updated Last Name",
-            "email":"new@new.com",
-            "levelAuth":"MN",
-            "type":"Manager",
-            "created":"2018-05-30T23:00:00.000+00:00",
-            "lastLogin":"2020-12-01T14:18:47.838+00:00",
-            "active":"true",
-            "siteID":"5fbd61b050682000149ce416",
-            "company":"new",
-            "personalDiscount":"0",
-            "country":"United Kingdom",
-            "town":"SURBITON",
-            "postcode":"545324",
-            "address":"436b Ewell Road",
-            "address1":"",
-            "phone":"3524624523"
-        }
-     */
   try {
     return await axiosInstance()
       .patch(`/employees/${employeeDetails?.id}`, employeeDetails)
@@ -115,6 +70,8 @@ export async function patchEmployeeById(employeeDetails) {
   }
 }
 
+// TODO: consider if I need an option to store the deleted accounts as backup somewhere and for what period
+// Do I want it just for one or when a group of users are deleted - it could be backed up just for a day - Example page Bin/Recycle
 export async function delEmployeeById(employeeId) {
   if (!employeeId)
     return { message: "Provided employee id was empty or undefined" };
@@ -129,10 +86,15 @@ export async function delEmployeeById(employeeId) {
 }
 
 export async function delEmployeeList(employeeList) {
-  // Need to ensure what data is returned and ensure all options will work
-  if (employeeList && employeeList?.length) {
-    employeeList.forEach((emp) => {
-      delEmployeeById(emp?.id || emp);
-    });
-  } else return { message: "Provided list of employees was empty" };
+  return new Promise(async (resolve, reject) => {
+    // Need to ensure what data is returned and ensure all options will work
+    // TODO: Ensure if even one item fails on the deletion to be displayed the error message
+    // if they were not delete before -> ensure UI is refreshed correctly
+    if (employeeList && employeeList?.length) {
+      employeeList.forEach(async (emp) => {
+        await delEmployeeById(emp?.id || emp);
+      });
+      resolve({ message: "All employees were deleted successfully" });
+    } else reject({ message: "Provided list of employees was empty" });
+  });
 }

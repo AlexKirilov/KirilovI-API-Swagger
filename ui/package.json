@@ -33,10 +33,7 @@
     "redux-thunk": "^2.4.1",
     "web-vitals": "^1.1.1"
   },
-  "proxy": [
-    "http://localhost:3000",
-    "http://localhost:4567"
-  ],
+  "proxy": "http://localhost:4567",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

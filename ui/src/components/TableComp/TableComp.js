@@ -7,10 +7,11 @@ import Table from "@mui/material/Table";
 import Paper from "@mui/material/Paper";
 import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
+import EditIcon from "@mui/icons-material/Edit";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import ClearIcon from '@mui/icons-material/Clear';
-import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 
@@ -56,11 +57,12 @@ function stableSort(array, comparator) {
 
 // TODO: Future updates make the Sorting and Pagination Server-side
 const TableComp = ({
+  isAdmin,
   rowsData,
   headCells,
+  handleOpenEdit,
   handleOnNewItem,
   handleOnItemDelete,
-  isAdmin,
 }) => {
   const [page, setPage] = React.useState(0);
   const [order, setOrder] = React.useState("asc");
@@ -138,8 +140,8 @@ const TableComp = ({
   }
 
   function getIcon(value) {
-    if (value === true) return <CheckIcon sx={{color: 'green'}}/>
-    if (value === false) return <ClearIcon sx={{color: 'red'}} />
+    if (value === true) return <CheckIcon sx={{ color: "green" }} />;
+    if (value === false) return <ClearIcon sx={{ color: "red" }} />;
   }
 
   return (
@@ -202,6 +204,7 @@ const TableComp = ({
                               />
                             </TableCell>
                           ) : null}
+
                           {headCells.map((colName, index) => (
                             <TableCell
                               // padding="none"
@@ -220,9 +223,18 @@ const TableComp = ({
                                 : row[colName.id]}
                             </TableCell>
                           ))}
+
+                          {isAdmin ? (
+                            <TableCell padding="checkbox" className={styles.CTRLBtns}>
+                              <EditIcon className={styles.btn}
+                                onClick={(event) => handleOpenEdit(event, row)}
+                              />
+                            </TableCell>
+                          ) : null}
                         </TableRow>
                       );
                     })}
+
               {emptyRows > 0 && (
                 <TableRow>
                   <TableCell colSpan={6} />
@@ -250,6 +262,7 @@ TableComp.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
   rowsData: PropTypes.array.isRequired,
   headCells: PropTypes.array.isRequired,
+  handleOpenEdit: PropTypes.func.isRequired,
   handleOnNewItem: PropTypes.func.isRequired,
   handleOnItemDelete: PropTypes.func.isRequired,
 };

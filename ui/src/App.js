@@ -1,13 +1,19 @@
-import React from 'react';
-import './App.scss';
-import { checkSession } from "./Core/services/CookieService"
+import "./App.scss";
+import React from "react";
 
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { checkSession } from "./Core/services/CookieService";
 
-import { SignIn } from './auth/SignIn';
-import { SignUp } from './auth/SignUp';
-import { Verify } from './auth/Verify';
-import { PassRestore } from './auth/PassRestore';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+
+import { SignIn } from "./auth/SignIn";
+import { SignUp } from "./auth/SignUp";
+import { Verify } from "./auth/Verify";
+import { PassRestore } from "./auth/PassRestore";
 
 // Main Components
 import { Header } from "./components/Header";
@@ -25,9 +31,18 @@ import ClientSwagger from "./pages/ClientSwagger/ClientSwagger.lazy";
 import Products from "./pages/Products/Products.lazy";
 
 function App() {
+  const authPages = [
+    "",
+    "/",
+    "/sign-in",
+    "/sign-up",
+    "/restore-pass",
+    "/verifyMe/:token",
+  ];
 
   const renderContent = () => {
-    if (checkSession()) { // If session is still active display content pages
+    if (checkSession()) {
+      // If session is still active display content pages
       return (
         <div>
           <Header></Header>
@@ -47,27 +62,35 @@ function App() {
             </Switch>
           </section>
         </div>
-      )
-    } else { // If there is no session display Auth pages
-      return (
-        <section>
-          {/* <HeaderHome></HeaderHome>
+      );
+    } else {
+      // if (!authPages.includes(window.location.pathname)) {
+      //   return (
+      // //     <Switch>
+      //       <Redirect push to="/" />
+      // //       <Redirect from="/" exact to="/sign-in" />
+      // //       <Route path="/sign-in" exact component={SignIn} />
+      // //     </Switch>
+      //   );
+      // } else
+        return (
+          <section>
+            {/* <HeaderHome></HeaderHome>
           <section  style="margin-top: 64px;"></section> */}
-          <Switch>
-            {/* <Redirect from="/" exact to="/home/" /> */}
-            <Redirect from="/" exact to="/sign-in/" />
-            {/* <Route path="/home" exact component={HomePage} /> */}
-            <Route path="/sign-in" exact component={SignIn} />
-            <Route path="/sign-up" component={SignUp} />
-            <Route path="/restore-pass" component={PassRestore} />
-            <Route path="/verifyMe/:token" component={Verify} />
-          </Switch>
-          {/* <HomePage></HomePage> */}
-        </section>
-      )
+            <Switch>
+              {/* <Redirect from="/" exact to="/home/" /> */}
+              <Redirect from="/" exact to="/sign-in" />
+              {/* <Route path="/home" exact component={HomePage} /> */}
+              <Route path="/sign-in" exact component={SignIn} />
+              <Route path="/sign-up" component={SignUp} />
+              <Route path="/restore-pass" component={PassRestore} />
+              <Route path="/verifyMe/:token" component={Verify} />
+            </Switch>
+            {/* <HomePage></HomePage> */}
+          </section>
+        );
     }
-  }
-
+  };
 
   return (
     <Router>

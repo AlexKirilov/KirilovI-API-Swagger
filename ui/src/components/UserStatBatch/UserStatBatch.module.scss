@@ -1,8 +1,4 @@
-.Employees {
-  header {
-    display: flex;
-    flex-direction: row;
-  }
+.UserStatBatch {
 }
 
 .StatBoxes {
@@ -15,6 +11,7 @@
 
   h6 {
     margin: 0;
+    text-align: start;
   }
 
   label {
@@ -24,7 +21,6 @@
 
   svg {
     font-size: 14px !important;
-    color: green;
     margin-top: 5px;
   }
 
@@ -33,4 +29,11 @@
     font-size: 28px;
     padding: 10px 4px 0px 16px !important;
   }
+}
+
+.Markers {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  line-height: 26px;
 }

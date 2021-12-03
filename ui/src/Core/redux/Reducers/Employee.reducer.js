@@ -8,19 +8,29 @@ const initialState = {
 export const employeeReducer = (state = initialState, action) => {
   switch (action.type) {
     case type.GET_EMPLOYEES:
-      console.log("STATE 1 ==> ", {
-        ...state,
+      return {
         employeeList: action.payload,
         loading: false,
-      });
+      };
+    case type.CREATE_EMPLOYEE:
       return {
         ...state,
         employeeList: action.payload,
         loading: false,
       };
-
+    case type.UPDATE_EMPLOYEE:
+      return {
+        ...state,
+        employeeList: action.payload,
+        loading: false,
+      };
+    case type.DELETE_EMPLOYEE:
+      return {
+        ...state,
+        employeeList: action.payload,
+        loading: false,
+      };
     default:
-      console.log("STATE DEFAULT ==> ", action.type);
       return state;
   }
 };

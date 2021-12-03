@@ -1,1 +1,9 @@
 .TableComp {}
+
+.CTRLBtns {
+    z-index: 9;
+    .btn {
+        padding: 5px;
+        cursor: pointer;
+    }
+}

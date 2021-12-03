@@ -38,6 +38,7 @@ export default function EnhancedTableHead({
             />
           </TableCell>
         ) : null}
+
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -59,13 +60,15 @@ export default function EnhancedTableHead({
             </TableSortLabel>
           </TableCell>
         ))}
+
+        {isAdmin ? <TableCell padding="checkbox"></TableCell> : null}
       </TableRow>
     </TableHead>
   );
 }
 
 EnhancedTableHead.propTypes = {
-  isAdmin: PropTypes.bool.isRequired, 
+  isAdmin: PropTypes.bool.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
   headCells: PropTypes.array.isRequired,
@@ -76,5 +79,5 @@ EnhancedTableHead.propTypes = {
 };
 
 EnhancedTableHead.defaultProps = {
-  isAdmin: false
+  isAdmin: false,
 };
