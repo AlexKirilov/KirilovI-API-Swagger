@@ -32,6 +32,15 @@ const customerSchema = new mongoose.Schema({
     }
 });
 
+// [{
+//     country: { type: String, default: '' },
+//     town: { type: String, default: '' },
+//     postcode: { type: String, default: '' },
+//     address: { type: String, default: '' },
+//     countryCode: { type: Number, default: '' },
+//     phoneNumber: { type: Number, default: '' },
+// }]
+
 customerSchema.pre('save', function (next) {
     var user = this;
 

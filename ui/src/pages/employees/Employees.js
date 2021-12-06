@@ -127,7 +127,9 @@ Employees.propTypes = {
   employeeList: PropTypes.object.isRequired,
 };
 
-Employees.defaultProps = {};
+Employees.defaultProps = {
+  employeeList: []
+};
 
 function mapStateToProps(state) {
   return {
@@ -138,4 +140,3 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Employees);
-// export default Employees;

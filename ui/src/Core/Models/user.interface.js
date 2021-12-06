@@ -4,7 +4,7 @@ export class UserDetailsI {
       this,
       {
         id: null,
-        username: null,
+        username: '',
         firstname: 'John',
         lastname: 'Doe',
         levelAuth: "EE",

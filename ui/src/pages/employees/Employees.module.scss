@@ -4,33 +4,3 @@
     flex-direction: row;
   }
 }
-
-.StatBoxes {
-  display: flex;
-  border: 1px solid #ccc;
-  border-radius: 30px !important;
-  width: 150px;
-  height: 60px;
-  margin: 10px;
-
-  h6 {
-    margin: 0;
-  }
-
-  label {
-    font-size: 10px !important;
-    color: #ccc;
-  }
-
-  svg {
-    font-size: 14px !important;
-    color: green;
-    margin-top: 5px;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: 28px;
-    padding: 10px 4px 0px 16px !important;
-  }
-}

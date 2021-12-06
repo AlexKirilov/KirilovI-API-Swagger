@@ -193,6 +193,7 @@ const UserDialog = ({
 };
 
 UserDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   errorMsg: PropTypes.string.isRequired,
   userDetails: PropTypes.object.isRequired,
